@@ -98,7 +98,7 @@ Event OnUpdate()
 	if MCM.DW_effects_heavy.GetValue() <= 0 || MCM.DW_effects_heavy.GetValue() >= 100 || MCM.DW_effects_heavy.GetValue() <= MCM.DW_effects_light.GetValue()
 		MCM.DW_effects_heavy.SetValue(66)
 	endif
-	if MCM.DW_effects_light.GetValue() <= 0 || MCM.DW_effects_light.GetValue() >= 100 || MCM.DW_effects_heavy.GetValue() <= MCM.DW_effects_light.GetValue()
+	if MCM.DW_effects_light.GetValue() <= 0 || MCM.DW_effects_light.GetValue() >= 100 || MCM.DW_effects_light.GetValue() <= MCM.DW_effects_light.GetValue()
 		MCM.DW_effects_light.SetValue(33)
 	endif
 	
