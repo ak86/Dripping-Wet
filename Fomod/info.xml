@@ -1,6 +1,6 @@
 ﻿<fomod>
-  <Name>Dripping wet</Name>
-  <Version>10-04-2016</Version>
+  <Name>Dripping when aroused</Name>
+  <Version>29-04-2016</Version>
   <Author>Ed86</Author>
   <Description>
   
@@ -9,26 +9,33 @@ Requires:
 -(Optional)SexLab Aroused (Redux), required for dripping
 -(Optional)Schlongs of Skyrim, required for futa support
 -(Optional)DDi/Zap, required for gag drooling support
- 
-Description:
-When player or npc female becomes sufficiently aroused (>50 arousal) their pussy will start leaking juices.(60s)
-After having anal or vaginal intercourse, character will leak cum.(60s)
-After having orgasm female will squirt.(10s)
-Wearing Gag will cause drooling effect.(10s)
 
-When player has more than 50 arousal, you will hear heartbeat, breathing and blurred vision.
-All effects can be had at same time, effects work through clothes.
+  
+Description:
+When female becomes sufficiently aroused, her pussy will start leaking juices.(60s)
+After having anal or vaginal intercourse, character will leak cum.(60s)
+After having orgasm females will squirt.(10s)
+Wearing Gag will cause drooling effect.(10s)
+When player(character) is aroused enough, you will hear heartbeat, breathing and have a blurred vision.
+All effects can be had at same time, effects work through clothes, affected npcs shown in mcm.
  
-Mod runs checks on player and actors within range every X seconds, If character aroused enough Mod applies hidden spell with 60 seconds duration, affected npcs shown in mcm.
+Your graphic settings, enb, etc can affect visibility of effects.
+ 
+Mod runs checks on player character and actors within range every X seconds, If character aroused enough Mod applies hidden spell with 60 seconds duration.
+ 
+You can change breathing sound by replacing with your desired effects
+light breathing:
+data\sound\fx\dw\DW_Breathing_a_lp
+heavy breathing:
+data\sound\fx\dw\DW_Breathing_b_lp
+there are some sound packs in thread
  
 Cheat?: you can set Arousal_threshold to 0 and all females will be dripping(even if you have no SLA)
-
-If you want to compile scripts, you need extracted sources of SL, SkyUi SDK, (optionals: SLA, SOS, Zaz, DDi)
-
-Rate Mod if you like it, oh and of course you can throw your cash at me on My Patreon page
+ 
+If you want to compile scripts, you need extracted sources of SL, SkyUi SDK, (for optionals: SLA, SOS, Zaz, DDi)
  
 Meshes and textures taken from ZaZ Animation Pack/skyrim, meshes modified to work w/o equipping inventory item
-Visuals taken from arousalvisuals-0.1 by idk who, which is lost during forum move. i've fixed scripts and annoying loop bug or was it feature?.
+Visuals and heartbeat taken from arousalvisuals-0.1 by idk who, which is lost during forum move. i've fixed scripts and annoying loop bug or was it feature?.
 
   </Description>
   <Website>http://www.loverslab.com/files/file/2300-dripping-when-aroused/</Website>

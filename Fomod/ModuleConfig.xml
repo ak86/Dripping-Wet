@@ -29,7 +29,7 @@
 					<plugins order="Explicit">
 						<plugin name="Readme">
 							<description>
-								Installing integration scripts for optional mods. Installing scripts w/o mod may lead to conflicts, CTDs, etc.
+								Installing integration scripts for optional mods./n Installing scripts without appropriate mods may lead to mod conflicts, CTDs, etc.
 							</description>
 							<conditionFlags>
 								<flag name="Readme">True</flag>
