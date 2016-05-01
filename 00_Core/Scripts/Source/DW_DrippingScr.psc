@@ -27,6 +27,8 @@ EndEvent
 
 Event OnUpdate()
 	akActor = GetActorRef()
+	;cast - spell using onHit to trigger effects
+	;addspell - abilities that run constantly
 		
 	if CORE.SLA.GetActorArousal(akActor) > CORE.DW_effects_light.GetValue()
 		;visuals
@@ -75,6 +77,11 @@ Event OnUpdate()
 				;dripping gag npc
 				if CORE.DDi.IsWearingDDGag(aNPC) || CORE.zbf.IsWearingZaZGag(aNPC)
 					CORE.DW_DrippingGag_Spell.cast( aNPC )
+				endif
+				
+				;breath npc
+				if CORE.DW_ModState0.GetValue() == 1 && !aNPC.HasSpell( CORE.DW_Breath_Spell )
+					aNPC.AddSpell( CORE.DW_Breath_Spell, false )
 				endif
 			endif
 			

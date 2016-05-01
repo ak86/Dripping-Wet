@@ -18,7 +18,11 @@ Event OnUpdate()
 	;debug.Notification(Sound1ID+" Beat cycle start "+Sound2ID)
 	if CORE.DW_ModState6.GetValue() == 1					;heartbeat sound enabled
 		float rank = CORE.SLA.GetActorArousal(akActor)
-		strSound = rank/100
+		if CORE.DW_ModState11.GetValue() == 0
+			strSound = rank/100
+		else
+			strSound = 1
+		endif
 
 		if  rank >= CORE.DW_effects_heavy.GetValue()		;high arousal
 			if Sound1ID != 0
@@ -51,12 +55,12 @@ Event OnUpdate()
 			endif
 			;CORE.Heartbeat1.PlayAndWait(akActor)
 		else
-			;debug.Notification(Sound1ID+" Beat1+2 stop "+Sound2ID)
+			;debug.Notification("Arousal too low, Heartbeat effect stopping " +Sound1ID + " | " + Sound2ID)
 			akActor.RemoveSpell(CORE.DW_Heart_Spell)
 			return
 		endif
 	else
-		;debug.Notification(Sound1ID+" Beat1+2 stop "+Sound2ID)
+		;debug.Notification("Heartbeat disabled, effect stopping " + Sound1ID + " | " + Sound2ID)
 		akActor.RemoveSpell(CORE.DW_Heart_Spell)
 		return
 	endif

@@ -6,6 +6,8 @@ Actor akActor
 
 Int Sound1ID = 0
 Int Sound2ID = 0
+Sound Sound1
+Sound Sound2
 float strSound
 
 Event OnEffectStart( Actor akTarget, Actor akCaster )
@@ -16,9 +18,25 @@ EndEvent
 Event OnUpdate()
 	;sound Breath high,low,none
 	;debug.Notification(Sound1ID+" Breath cycle start "+Sound2ID)
-	if CORE.DW_ModState8.GetValue() == 1					;Breath sound enabled
+	if (CORE.DW_ModState8.GetValue() == 1 && akActor == Game.GetPlayer()) || (CORE.DW_ModState0.GetValue() == 1 && akActor != Game.GetPlayer())					;Breath sound enabled
 		float rank = CORE.SLA.GetActorArousal(akActor)
-		strSound = rank/100
+		if CORE.DW_ModState12.GetValue() == 0
+			strSound = rank/100
+		else
+			strSound = 1
+		endif
+		
+		if akActor.GetLeveledActorBase().GetSex() == 1			;female
+			Sound1 = CORE.Breathing1
+			Sound2 = CORE.Breathing2
+		;elseif akActor.GetLeveledActorBase().GetSex() == 0		;male
+		;	Sound1 = CORE.Breathing3
+		;	Sound2 = CORE.Breathing4
+		else													;no beasts :/
+			;debug.Notification("Actor is beast, Breathing effect stopping")
+			akActor.RemoveSpell(CORE.DW_Breath_Spell)
+			return
+		endif
 
 		if  rank >= CORE.DW_effects_heavy.GetValue()		;high arousal
 			if Sound1ID != 0
@@ -27,7 +45,7 @@ Event OnUpdate()
 				Sound1ID = 0
 			endif
 			if Sound2ID == 0
-				Sound2ID = CORE.Breathing2.play(akActor)
+				Sound2ID = Sound2.play(akActor)
 				;debug.Notification(Sound2ID+" Breath2 start")
 				Sound.SetInstanceVolume(Sound2ID, strSound)
 			else
@@ -42,19 +60,19 @@ Event OnUpdate()
 			endif
 			if Sound1ID == 0
 				;debug.Notification(Sound1ID+" Breath1 start")
-				Sound1ID = CORE.Breathing1.play(akActor)
+				Sound1ID = Sound1.play(akActor)
 				Sound.SetInstanceVolume(Sound1ID, strSound)
 			else
 				;debug.Notification(Sound1ID+" Breath1 update")
 				Sound.SetInstanceVolume(Sound1ID, strSound)
 			endif
 		else
-			;debug.Notification(Sound1ID+" Breath1+2 stop "+Sound2ID)
+			;debug.Notification("Arousal too low, Breathing effect stopping " +Sound1ID + " | " + Sound2ID)
 			akActor.RemoveSpell(CORE.DW_Breath_Spell)
 			return
 		endif
 	else
-		;debug.Notification(Sound1ID+" Breath1+2 stop "+Sound2ID)
+		;debug.Notification("Breathing disabled, effect stopping " + Sound1ID + " | " + Sound2ID)
 		akActor.RemoveSpell(CORE.DW_Breath_Spell)
 		return
 	endif

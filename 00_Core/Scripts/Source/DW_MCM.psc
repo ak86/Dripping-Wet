@@ -32,7 +32,6 @@ endEvent
 function Page_Settings()
 	SetCursorFillMode(TOP_TO_BOTTOM)
 		AddHeaderOption("Configuration")
-			;AddToggleOptionST("IntegrationWarnings_Toggle", "Integration warnings", CORE.DW_ModState0.GetValue())
 			AddSliderOptionST("DW_Timer_Slider", "Scrip Polling rate", CORE.DW_Timer.GetValue() as int, "{0} sec")
 			AddEmptyOption()
 
@@ -59,6 +58,9 @@ function Page_Settings()
 
 			AddToggleOptionST("Heart_Toggle", "Heartbeat effect", CORE.DW_ModState6.GetValue())
 			AddToggleOptionST("Breathing_Toggle", "Breathing effect", CORE.DW_ModState8.GetValue())
+			AddToggleOptionST("HeartVol_Toggle", "Heartbeat max volume", CORE.DW_ModState11.GetValue())
+			AddToggleOptionST("BreathingVol_Toggle", "Breathing max volume", CORE.DW_ModState12.GetValue())
+			AddToggleOptionST("Breathing_NPC_Toggle", "NPC Breathing effect", CORE.DW_ModState0.GetValue())
 			AddToggleOptionST("Sound_Disable_Toggle", "Disable during Sl anim", CORE.DW_ModState10.GetValue())
 			AddEmptyOption()
 		
@@ -87,7 +89,7 @@ state Cloak_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Cloak for NPCs dripping effect")
+		SetInfoText("Cloak for NPCs dripping,gag,breath effects")
 	endEvent
 endState
 
@@ -104,21 +106,6 @@ state Cloak_Range_Slider
 		SetSliderOptionValueST(CORE.DW_Cloak_Range.GetValue())
 	endEvent
 endState
-
-;state IntegrationWarnings_Toggle
-;	event OnSelectST()
-;		if CORE.DW_ModState0.GetValue() != 1
-;			CORE.DW_ModState0.SetValue(1)
-;		else
-;			CORE.DW_ModState0.SetValue(0)
-;		endif
-;		SetToggleOptionValueST(CORE.DW_ModState0.GetValue())
-;	endEvent
-;	
-;	event OnHighlightST()
-;		SetInfoText("Integration warnings during game launch")
-;	endEvent
-;endState
 
 state PreDripping_Toggle
 	event OnSelectST()
@@ -271,6 +258,54 @@ state Breathing_Toggle
 	
 	event OnHighlightST()
 		SetInfoText("Player arousal breathing sound")
+	endEvent
+endState
+
+state HeartVol_Toggle
+	event OnSelectST()
+		if CORE.DW_ModState11.GetValue() != 1
+			CORE.DW_ModState11.SetValue(1)
+		else
+			CORE.DW_ModState11.SetValue(0)
+			Maintenance()
+		endif
+		SetToggleOptionValueST(CORE.DW_ModState11.GetValue())
+	endEvent
+	
+	event OnHighlightST()
+		SetInfoText("Use always max volume for heartbeat sound instead of arousal based")
+	endEvent
+endState
+
+state BreathingVol_Toggle
+	event OnSelectST()
+		if CORE.DW_ModState12.GetValue() != 1
+			CORE.DW_ModState12.SetValue(1)
+		else
+			CORE.DW_ModState12.SetValue(0)
+			Maintenance()
+		endif
+		SetToggleOptionValueST(CORE.DW_ModState12.GetValue())
+	endEvent
+	
+	event OnHighlightST()
+		SetInfoText("Use always max volume for breathing sound instead of arousal based")
+	endEvent
+endState
+
+state Breathing_NPC_Toggle
+	event OnSelectST()
+		if CORE.DW_ModState0.GetValue() != 1
+			CORE.DW_ModState0.SetValue(1)
+		else
+			CORE.DW_ModState0.SetValue(0)
+			Maintenance()
+		endif
+		SetToggleOptionValueST(CORE.DW_ModState0.GetValue())
+	endEvent
+	
+	event OnHighlightST()
+		SetInfoText("Npc arousal breathing sound")
 	endEvent
 endState
 

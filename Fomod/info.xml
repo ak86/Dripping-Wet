@@ -1,6 +1,6 @@
 ﻿<fomod>
   <Name>Dripping when aroused</Name>
-  <Version>29-04-2016</Version>
+  <Version>01-05-2016</Version>
   <Author>Ed86</Author>
   <Description>
   
@@ -23,16 +23,24 @@ Your graphic settings, enb, etc can affect visibility of effects.
  
 Mod runs checks on player character and actors within range every X seconds, If character aroused enough Mod applies hidden spell with 60 seconds duration.
  
+ Cheat?: you can set Arousal_threshold to 0 and all females will be dripping(even if you have no SLA)
+
+ You can increase sound volume in CK/TES Edit, see screen shot below
+ 
 You can change breathing sound by replacing with your desired effects
-light breathing:
-data\sound\fx\dw\DW_Breathing_a_lp
-heavy breathing:
-data\sound\fx\dw\DW_Breathing_b_lp
-there are some sound packs in thread
+data\sound\fx\dw\
+there are some sound pack in thread
+
+to enable male breathing you need to uncomment script DW_BreathSpellScr
+		;elseif akActor.GetLeveledActorBase().GetSex() == 0		;male
+		;	Sound1 = CORE.Breathing3
+		;	Sound2 = CORE.Breathing4
+also you need to supply sound files, instead of default ones(renamed female sound):
+DW_Breathing_M_H_lp
+DW_Breathing_M_L_lp
  
-Cheat?: you can set Arousal_threshold to 0 and all females will be dripping(even if you have no SLA)
  
-If you want to compile scripts, you need extracted sources of SL, SkyUi SDK, (for optionals: SLA, SOS, Zaz, DDi)
+If you want to compile scripts, you need extracted sources of SL, SkyUi SDK, (for optional plug-ins respective sources: SLA, SOS, Zaz, DDi)
  
 Meshes and textures taken from ZaZ Animation Pack/skyrim, meshes modified to work w/o equipping inventory item
 Visuals and heartbeat taken from arousalvisuals-0.1 by idk who, which is lost during forum move. i've fixed scripts and annoying loop bug or was it feature?.
