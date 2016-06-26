@@ -5,23 +5,10 @@ DW_CORE property CORE auto
 Actor akActor
 
 Event OnInit()
-	RegisterForModEvent("OrgasmStart", "OnSexLabOrgasm")
-	RegisterForModEvent("HookAnimationStart", "AnimationStart")
-	RegisterForModEvent("HookAnimationEnd", "AnimationEnd")
-	CORE.MCM.Maintenance()
-	CORE.DW_Status_Global.SetValue(1)
-	debug.Notification("Dripping when aroused initialised.")
 	RegisterForSingleUpdate(1)
 Endevent
 
 Event OnPlayerLoadGame()
-	RegisterForModEvent("OrgasmStart", "OnSexLabOrgasm")
-	RegisterForModEvent("HookAnimationStart", "AnimationStart")
-	RegisterForModEvent("HookAnimationEnd", "AnimationEnd")
-	CORE.bAnimating == false
-	;check optionals
-	CORE.MCM.Maintenance()
-	CORE.DW_Status_Global.SetValue(1)
 	RegisterForSingleUpdate(1)
 EndEvent
 
@@ -32,19 +19,19 @@ Event OnUpdate()
 		
 	if CORE.SLA.GetActorArousal(akActor) > CORE.DW_effects_light.GetValue()
 		;visuals
-		if !(CORE.bAnimating == true && CORE.DW_ModState9.GetValue() == 1)
-			if (CORE.DW_ModState5.GetValue() == 1 || CORE.DW_ModState7.GetValue() == 1) && !akActor.HasSpell( CORE.DW_Visuals_Spell )
+		if !(CORE.bAnimating == true && CORE.DW_ModState09.GetValue() == 1)
+			if (CORE.DW_ModState05.GetValue() == 1 || CORE.DW_ModState07.GetValue() == 1) && !akActor.HasSpell( CORE.DW_Visuals_Spell )
 				akActor.AddSpell( CORE.DW_Visuals_Spell, false )
 			endif
 		endif
 		;sound
 		if !(CORE.bAnimating == true && CORE.DW_ModState10.GetValue() == 1) 
 			;hearth beat
-			if CORE.DW_ModState6.GetValue() == 1 && !akActor.HasSpell( CORE.DW_Heart_Spell )
+			if CORE.DW_ModState06.GetValue() == 1 && !akActor.HasSpell( CORE.DW_Heart_Spell )
 				akActor.AddSpell( CORE.DW_Heart_Spell, false )
 			endif
 			;breath
-			if CORE.DW_ModState8.GetValue() == 1 && !akActor.HasSpell( CORE.DW_Breath_Spell )
+			if CORE.DW_ModState08.GetValue() == 1 && !akActor.HasSpell( CORE.DW_Breath_Spell )
 				akActor.AddSpell( CORE.DW_Breath_Spell, false )
 			endif
 		endif
@@ -80,7 +67,7 @@ Event OnUpdate()
 				endif
 				
 				;breath npc
-				if CORE.DW_ModState0.GetValue() == 1 && !aNPC.HasSpell( CORE.DW_Breath_Spell )
+				if CORE.DW_ModState00.GetValue() == 1 && !aNPC.HasSpell( CORE.DW_Breath_Spell )
 					aNPC.AddSpell( CORE.DW_Breath_Spell, false )
 				endif
 			endif
@@ -96,42 +83,5 @@ Event OnObjectUnequipped( Form akBaseObject, ObjectReference akReference )
 	akActor = GetActorRef()
 	if !(CORE.DDi.IsWearingDDGag(akActor) || CORE.zbf.IsWearingZaZGag(akActor))
 		akActor.RemoveSpell(CORE.DW_DrippingGag_Spell)
-	endif
-EndEvent
-
-Event OnSexLabOrgasm(String _eventName, String _args, Float _argc, Form _sender)
-	Actor[] actors = CORE.SexLab.HookActors(_args)
-	int idx = 0
-	sslBaseAnimation animation = CORE.SexLab.HookAnimation(_args)
-	
-	if (animation.HasTag("Anal") || animation.HasTag("Vaginal")) && actors.Length > 1
-		If CORE.SOS.GetSOS(actors[1]) == true || actors[1].GetLeveledActorBase().GetSex() != 1
-			CORE.DW_DrippingCum_Spell.cast( actors[0] )
-		EndIf
-	endif
-	
-	While idx < actors.Length
-		CORE.DW_DrippingSquirt_Spell.cast( actors[idx] )
-		idx += 1
-	EndWhile
-EndEvent
-
-Event AnimationStart(int threadID, bool HasPlayer)
-	akActor = GetActorRef()
-	if HasPlayer == true
-		CORE.bAnimating = true
-		if CORE.DW_ModState9.GetValue() == 1	;remove visuals
-			akActor.RemoveSpell(CORE.DW_Visuals_Spell)
-		endif
-		if CORE.DW_ModState10.GetValue() == 1	;remove sound
-			akActor.RemoveSpell(CORE.DW_Heart_Spell)
-			akActor.RemoveSpell(CORE.DW_Breath_Spell)
-		endif
-	endif
-EndEvent
-
-Event AnimationEnd(int threadID, bool HasPlayer)
-	if HasPlayer == true
-		CORE.bAnimating = false
 	endif
 EndEvent

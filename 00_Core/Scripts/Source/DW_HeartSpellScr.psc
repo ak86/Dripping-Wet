@@ -16,7 +16,7 @@ EndEvent
 Event OnUpdate()
 	;sound heartbeat high,low,none
 	;debug.Notification(Sound1ID+" Beat cycle start "+Sound2ID)
-	if CORE.DW_ModState6.GetValue() == 1					;heartbeat sound enabled
+	if CORE.DW_ModState06.GetValue() == 1					;heartbeat sound enabled
 		float rank = CORE.SLA.GetActorArousal(akActor)
 		if CORE.DW_ModState11.GetValue() == 0
 			strSound = rank/100
@@ -24,7 +24,7 @@ Event OnUpdate()
 			strSound = 1
 		endif
 
-		if  rank >= CORE.DW_effects_heavy.GetValue()		;high arousal
+		if rank >= CORE.DW_effects_heavy.GetValue()		;high arousal
 			if Sound1ID != 0
 				;debug.Notification(Sound1ID+" Beat1 stop")
 				Sound.StopInstance(Sound1ID)
@@ -59,12 +59,10 @@ Event OnUpdate()
 			akActor.RemoveSpell(CORE.DW_Heart_Spell)
 			return
 		endif
-	else
-		;debug.Notification("Heartbeat disabled, effect stopping " + Sound1ID + " | " + Sound2ID)
-		akActor.RemoveSpell(CORE.DW_Heart_Spell)
+		RegisterForSingleUpdate(CORE.DW_SpellsUpdateTimer.GetValue())
 		return
 	endif
-	RegisterForSingleUpdate(1)
+	akActor.RemoveSpell(CORE.DW_Heart_Spell)
 EndEvent
 
 Event OnEffectFinish( Actor akTarget, Actor akCaster )

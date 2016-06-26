@@ -1,6 +1,6 @@
 ﻿<fomod>
   <Name>Dripping when aroused</Name>
-  <Version>01-05-2016</Version>
+  <Version>26-06-2016</Version>
   <Author>Ed86</Author>
   <Description>
   
@@ -14,9 +14,10 @@ Requires:
 Description:
 When female becomes sufficiently aroused, her pussy will start leaking juices.(60s)
 After having anal or vaginal intercourse, character will leak cum.(60s)
+Having vaginal intercourse will cause character to loose virginity and bleed.(60s)
 After having orgasm females will squirt.(10s)
 Wearing Gag will cause drooling effect.(10s)
-When player(character) is aroused enough, you will hear heartbeat, breathing and have a blurred vision.
+When PC is aroused enough, you will hear heartbeat, breathing(incl. NPCs) and have a blurred vision.
 All effects can be had at same time, effects work through clothes, affected npcs shown in mcm.
  
 Your graphic settings, enb, etc can affect visibility of effects.
@@ -25,17 +26,23 @@ Mod runs checks on player character and actors within range every X seconds, If 
  
  Cheat?: you can set Arousal_threshold to 0 and all females will be dripping(even if you have no SLA)
 
- You can increase sound volume in CK/TES Edit, see screen shot below
+ 
+ 
+ 
+Modders stuff:
+You can restore player virginity by sending ModEvent "PlayerRestoreVirginity"
+
+You can increase sound volume in CK/TES Edit, see screen shot below
  
 You can change breathing sound by replacing with your desired effects
 data\sound\fx\dw\
-there are some sound pack in thread
+there are some sound packs in thread
 
 to enable male breathing you need to uncomment script DW_BreathSpellScr
 		;elseif akActor.GetLeveledActorBase().GetSex() == 0		;male
 		;	Sound1 = CORE.Breathing3
 		;	Sound2 = CORE.Breathing4
-also you need to supply sound files, instead of default ones(renamed female sound):
+also you need to supply your own sound files, instead of default ones(renamed female sound):
 DW_Breathing_M_H_lp
 DW_Breathing_M_L_lp
  
@@ -43,7 +50,7 @@ DW_Breathing_M_L_lp
 If you want to compile scripts, you need extracted sources of SL, SkyUi SDK, (for optional plug-ins respective sources: SLA, SOS, Zaz, DDi)
  
 Meshes and textures taken from ZaZ Animation Pack/skyrim, meshes modified to work w/o equipping inventory item
-Visuals and heartbeat taken from arousalvisuals-0.1 by idk who, which is lost during forum move. i've fixed scripts and annoying loop bug or was it feature?.
+Visuals and heartbeat taken from arousalvisuals-0.1 by idk who, which is lost during forum move in 2015. i've fixed scripts and annoying loop bug or was it feature?.
 
   </Description>
   <Website>http://www.loverslab.com/files/file/2300-dripping-when-aroused/</Website>
