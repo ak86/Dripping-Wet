@@ -58,6 +58,7 @@ ImageSpaceModifier Property LowArousalVisual Auto
 
 Bool Property bAnimating = false Auto		;SL player animation detection for stopping sound/visual effects
 Bool Property bPlayerIsVirgin = true Auto
+Bool Property bSLStatsIgnore = false Auto
 
 Int Property PlayerVirginityLoss Auto
 
@@ -68,10 +69,11 @@ Int Property PlayerVirginityLoss Auto
 
 Event OnInit()
 	RegisterForModEvent("OrgasmStart", "OnSexLabOrgasm")
-	RegisterForModEvent("HookAnimationStart", "AnimationStart")
-	RegisterForModEvent("HookAnimationEnd", "AnimationEnd")
-	RegisterForModEvent("HookStageStart", "OnSexLabOrgasm")
-	RegisterForModEvent("PlayerRestoreVirginity", "PRV")
+	RegisterForModEvent("DeviceActorOrgasm", "OnDDOrgasm")
+	RegisterForModEvent("AnimationStart", "OnAnimationStart")
+	RegisterForModEvent("AnimationEnd", "OnAnimationEnd")
+	RegisterForModEvent("StageStart", "OnSexLabStageChange")
+	RegisterForModEvent("RestoreVirginity", "RV")
 	MCM.Maintenance()
 	DW_Status_Global.SetValue(1)
 	debug.Notification("Dripping when aroused initialised.")
@@ -80,9 +82,10 @@ Endevent
 
 Event OnPlayerLoadGame()
 	RegisterForModEvent("OrgasmStart", "OnSexLabOrgasm")
-	RegisterForModEvent("HookAnimationStart", "AnimationStart")
-	RegisterForModEvent("HookAnimationEnd", "OnSexLabStageChange")
-	RegisterForModEvent("PlayerRestoreVirginity", "PRV")
+	RegisterForModEvent("DeviceActorOrgasm", "OnDDOrgasm")
+	RegisterForModEvent("AnimationStart", "OnAnimationStart")
+	RegisterForModEvent("StageStart", "OnSexLabStageChange")
+	RegisterForModEvent("RestoreVirginity", "RV")
 	bAnimating == false
 	;check optionals
 	MCM.Maintenance()
@@ -91,8 +94,18 @@ Event OnPlayerLoadGame()
 	DW_VirginsClaimedTG.Revert()
 EndEvent
 
-Event PRV()
-	bPlayerIsVirgin = true
+Event RV(Form apForm)
+	Actor akActor = apForm as Actor
+	if akActor != None 
+		if DW_VirginsList.HasForm(akActor)
+			DW_VirginsList.RemoveAddedForm(akActor)
+			debug.Trace(akActor.GetLeveledActorBase().GetName() +" virginity restored")
+		endif
+		if akActor == Game.GetPlayer()
+			bPlayerIsVirgin = true
+			debug.Trace("PC virginity restored")
+		endif
+	endif
 EndEvent
 
 Event OnSexLabOrgasm(String _eventName, String _args, Float _argc, Form _sender)
@@ -116,6 +129,13 @@ Event OnSexLabOrgasm(String _eventName, String _args, Float _argc, Form _sender)
 	endif
 EndEvent
 
+Event OnDDOrgasm(string eventName, string argString, float argNum, form sender)
+	Actor akActor = Game.GetPlayer()
+	if DW_ModState03.GetValue() == 1 && akActor.GetLeveledActorBase().GetName() == argString
+		DW_DrippingSquirt_Spell.cast( akActor )
+	endif
+EndEvent
+
 Event OnSexLabStageChange(String _eventName, String _args, Float _argc, Form _sender)
 	Actor[] actors = SexLab.HookActors(_args)
 	int idx = 0
@@ -125,7 +145,15 @@ Event OnSexLabStageChange(String _eventName, String _args, Float _argc, Form _se
 		if animation.HasTag("Vaginal") && actors.Length > 1
 			If SOS.GetSOS(actors[1]) == true || actors[1].GetLeveledActorBase().GetSex() != 1
 				If DW_VirginsList.Find(actors[0]) == -1
-					If actors[0] == Game.GetPlayer() && bPlayerIsVirgin == true 
+                    If SexLab.HadSex(actors[0]) && (SexLab.GetSkillTitle(actors[0], "kVaginal") > 0)
+						If bSLStatsIgnore != true 
+							If !(actors[0] == Game.GetPlayer() && bPlayerIsVirgin == true)
+								DW_VirginsList.AddForm(actors[0])
+								return
+							EndIf
+						EndIf
+					EndIf
+					If actors[0] == Game.GetPlayer() && bPlayerIsVirgin == true
 						debug.Notification("You have lost your virginity!")
 						bPlayerIsVirgin = false
 						PlayerVirginityLoss += 1
@@ -157,7 +185,7 @@ Event OnSexLabStageChange(String _eventName, String _args, Float _argc, Form _se
 	endif
 EndEvent
 
-Event AnimationStart(int threadID, bool HasPlayer)
+Event OnAnimationStart(int threadID, bool HasPlayer)
 	Actor akActor = Game.GetPlayer()
 	if HasPlayer == true
 		bAnimating = true
@@ -171,7 +199,7 @@ Event AnimationStart(int threadID, bool HasPlayer)
 	endif
 EndEvent
 
-Event AnimationEnd(int threadID, bool HasPlayer)
+Event OnAnimationEnd(int threadID, bool HasPlayer)
 	if HasPlayer == true
 		bAnimating = false
 	endif

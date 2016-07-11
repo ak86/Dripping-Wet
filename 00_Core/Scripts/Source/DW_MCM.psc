@@ -82,6 +82,7 @@ function Page_Settings()
 			AddToggleOptionST("VLE_Toggle", "Virginity loss effect", CORE.DW_ModState13.GetValue())
 			;AddToggleOptionST("VLT_Toggle", "Virginity loss texture", CORE.DW_ModState14.GetValue())
 			AddToggleOptionST("VLM_Toggle", "Virginity messages", CORE.DW_ModState15.GetValue())
+			AddToggleOptionST("VLISLS_Toggle", "Ignore SL stats", CORE.bSLStatsIgnore)
 			AddEmptyOption()
 
 			AddSliderOptionST("DW_effects_light_Slider", "Light Arousal effects threshold", CORE.DW_effects_light.GetValue() as int)
@@ -292,6 +293,21 @@ state VLM_Toggle
 	
 	event OnHighlightST()
 		SetInfoText("1,5,10,15,25")
+	endEvent
+endState
+
+state VLISLS_Toggle
+	event OnSelectST()
+		if CORE.bSLStatsIgnore != true
+			CORE.bSLStatsIgnore = true
+		else
+			CORE.bSLStatsIgnore = false
+		endif
+		SetToggleOptionValueST(CORE.bSLStatsIgnore)
+	endEvent
+	
+	event OnHighlightST()
+		SetInfoText("ON:Ignore Sexlab Stats, use DW virginity detection")
 	endEvent
 endState
 
@@ -562,6 +578,7 @@ event OnOptionSelect(int option)
 		SetToggleOptionValue(Page_Virginity_VC_OID, true)
 		ResetVC = false
 	elseif option == Page_Virginity_VL_OID
+		CORE.bPlayerIsVirgin = true
 		CORE.DW_VirginsList.Revert()
 		SetToggleOptionValue(Page_Virginity_VL_OID, true)
 		ResetVL = false
