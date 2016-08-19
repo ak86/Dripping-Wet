@@ -1,5 +1,9 @@
 Scriptname DW_SOS extends Quest
 
+Event OnInit()
+	StorageUtil.SetIntValue(none,"DW.PluginsCheck.sos",2)
+EndEvent
+
 bool Function IsIntegraged ()
 	Return True
 EndFunction

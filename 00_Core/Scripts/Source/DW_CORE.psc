@@ -7,9 +7,6 @@ DW_DDi property DDi auto
 DW_zbf property zbf auto
 DW_MCM property MCM auto
 
-GlobalVariable Property DW_Timer Auto
-GlobalVariable Property DW_SpellsUpdateTimer Auto
-GlobalVariable Property DW_Cloak Auto
 GlobalVariable Property DW_ModState00 Auto		; NPC Breathing effect
 GlobalVariable Property DW_ModState01 Auto		; Arousal Dripping effect
 GlobalVariable Property DW_ModState02 Auto		; Cum effect
@@ -26,13 +23,8 @@ GlobalVariable Property DW_ModState12 Auto		; Breath Sound volume max/arousal ba
 GlobalVariable Property DW_ModState13 Auto		; Virginity loss effect
 GlobalVariable Property DW_ModState14 Auto		; Virginity loss texture effect
 GlobalVariable Property DW_ModState15 Auto		; Virginity game messages
-GlobalVariable Property DW_effects_light Auto
-GlobalVariable Property DW_effects_heavy Auto
 GlobalVariable Property DW_Cloak_Range Auto
-GlobalVariable Property DW_Arousal_threshold Auto
-GlobalVariable Property DW_Status_Global Auto
 
-FormList Property DW_Actors Auto
 FormList Property DW_VirginsList Auto
 FormList Property DW_VirginsClaimed Auto
 FormList Property DW_VirginsClaimedTG Auto
@@ -56,43 +48,7 @@ Sound Property Heartbeat2 Auto				;High
 ImageSpaceModifier Property HighArousalVisual Auto
 ImageSpaceModifier Property LowArousalVisual Auto
 
-Bool Property bAnimating = false Auto		;SL player animation detection for stopping sound/visual effects
-Bool Property bPlayerIsVirgin = true Auto
-Bool Property bSLStatsIgnore = false Auto
-
-Int Property PlayerVirginityLoss Auto
-
-
-
-
-
-
-Event OnInit()
-	RegisterForModEvent("OrgasmStart", "OnSexLabOrgasm")
-	RegisterForModEvent("DeviceActorOrgasm", "OnDDOrgasm")
-	RegisterForModEvent("AnimationStart", "OnAnimationStart")
-	RegisterForModEvent("AnimationEnd", "OnAnimationEnd")
-	RegisterForModEvent("StageStart", "OnSexLabStageChange")
-	RegisterForModEvent("RestoreVirginity", "RV")
-	MCM.Maintenance()
-	DW_Status_Global.SetValue(1)
-	debug.Notification("Dripping when aroused initialised.")
-	RegisterForSingleUpdate(1)
-Endevent
-
-Event OnPlayerLoadGame()
-	RegisterForModEvent("OrgasmStart", "OnSexLabOrgasm")
-	RegisterForModEvent("DeviceActorOrgasm", "OnDDOrgasm")
-	RegisterForModEvent("AnimationStart", "OnAnimationStart")
-	RegisterForModEvent("StageStart", "OnSexLabStageChange")
-	RegisterForModEvent("RestoreVirginity", "RV")
-	bAnimating == false
-	;check optionals
-	MCM.Maintenance()
-	DW_Status_Global.SetValue(1)
-	RegisterForSingleUpdate(1)
-	DW_VirginsClaimedTG.Revert()
-EndEvent
+;StorageUtil.SetIntValue(none,"DW.bAnimating", 1) ;SL player animation detection for stopping sound/visual effects
 
 Event RV(Form apForm)
 	Actor akActor = apForm as Actor
@@ -102,7 +58,7 @@ Event RV(Form apForm)
 			debug.Trace(akActor.GetLeveledActorBase().GetName() +" virginity restored")
 		endif
 		if akActor == Game.GetPlayer()
-			bPlayerIsVirgin = true
+			StorageUtil.SetIntValue(none,"DW.bPlayerIsVirgin", 1)
 			debug.Trace("PC virginity restored")
 		endif
 	endif
@@ -146,32 +102,32 @@ Event OnSexLabStageChange(String _eventName, String _args, Float _argc, Form _se
 			If SOS.GetSOS(actors[1]) == true || actors[1].GetLeveledActorBase().GetSex() != 1
 				If DW_VirginsList.Find(actors[0]) == -1
                     If SexLab.HadSex(actors[0]) && (SexLab.GetSkillTitle(actors[0], "kVaginal") > 0)
-						If bSLStatsIgnore != true 
-							If !(actors[0] == Game.GetPlayer() && bPlayerIsVirgin == true)
+						If StorageUtil.GetIntValue(none,"DW.bSLStatsIgnore") != 1 
+							If !(actors[0] == Game.GetPlayer() && StorageUtil.GetIntValue(none,"DW.bPlayerIsVirgin", 1))
 								DW_VirginsList.AddForm(actors[0])
 								return
 							EndIf
 						EndIf
 					EndIf
-					If actors[0] == Game.GetPlayer() && bPlayerIsVirgin == true
-						debug.Notification("You have lost your virginity!")
-						bPlayerIsVirgin = false
-						PlayerVirginityLoss += 1
+					If actors[0] == Game.GetPlayer() && StorageUtil.GetIntValue(none,"DW.bPlayerIsVirgin", 1)
+						debug.Notification("$DW_VIRGINITYLOST")
+						StorageUtil.SetIntValue(none,"DW.bPlayerIsVirgin", 0)
+						StorageUtil.AdjustIntValue(none,"DW.PlayerVirginityLoss", 1)
 					elseif actors[1] == Game.GetPlayer() 
-						debug.Notification("You have claimed " + actors[0].GetLeveledActorBase().GetName() + " virginity!")
+						debug.Notification("$DW_VIRGINSCLAIMED")
 						DW_VirginsClaimed.AddForm(actors[0])
 						DW_VirginsClaimedTG.AddForm(actors[0])
 						If DW_ModState15.GetValue() == 1
 							If DW_VirginsClaimedTG.GetSize() == 1
-								debug.Messagebox("First Blood!")
+								debug.Messagebox("$DW_FIRSTBLOOD")
 							elseif DW_VirginsClaimedTG.GetSize() == 5
-								debug.Messagebox("Power Play!")
+								debug.Messagebox("$DW_POWERPLAY")
 							elseif DW_VirginsClaimedTG.GetSize() == 10
-								debug.Messagebox("Brutality!")
+								debug.Messagebox("$DW_BRUTALITY")
 							elseif DW_VirginsClaimedTG.GetSize() == 15
-								debug.Messagebox("Domination!")
+								debug.Messagebox("$DW_DOMINATION")
 							elseif DW_VirginsClaimedTG.GetSize() == 25
-								debug.Messagebox("Complete Annihilation!")
+								debug.Messagebox("$DW_ANNIHILATION")
 							EndIf
 						EndIf
 					EndIf
@@ -188,7 +144,7 @@ EndEvent
 Event OnAnimationStart(int threadID, bool HasPlayer)
 	Actor akActor = Game.GetPlayer()
 	if HasPlayer == true
-		bAnimating = true
+		StorageUtil.SetIntValue(none,"DW.bAnimating", 1)
 		if DW_ModState09.GetValue() == 1	;remove visuals
 			akActor.RemoveSpell(DW_Visuals_Spell)
 		endif
@@ -201,7 +157,6 @@ EndEvent
 
 Event OnAnimationEnd(int threadID, bool HasPlayer)
 	if HasPlayer == true
-		bAnimating = false
+		StorageUtil.SetIntValue(none,"DW.bAnimating", 0)
 	endif
 EndEvent
-

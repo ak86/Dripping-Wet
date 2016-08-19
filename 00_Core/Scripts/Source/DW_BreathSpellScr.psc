@@ -18,6 +18,9 @@ EndEvent
 Event OnUpdate()
 	;sound Breath high,low,none
 	;debug.Notification(Sound1ID+" Breath cycle start "+Sound2ID)
+	if StorageUtil.FormListHas(none, "DW.Actors", akActor)
+		StorageUtil.FormListAdd(none, "DW.Actors", akActor, false)
+	endIf
 	if akActor.IsInLocation(Game.GetPlayer().getCurrentLocation())
 		if (CORE.DW_ModState08.GetValue() == 1 && akActor == Game.GetPlayer()) || (CORE.DW_ModState00.GetValue() == 1 && akActor != Game.GetPlayer())
 			float rank = CORE.SLA.GetActorArousal(akActor)
@@ -27,19 +30,18 @@ Event OnUpdate()
 				strSound = 1
 			endif
 			
-			if akActor.GetLeveledActorBase().GetSex() == 1			;female
+			if akActor.GetLeveledActorBase().GetSex() == 1		;female
 				Sound1 = CORE.Breathing1
 				Sound2 = CORE.Breathing2
-			;elseif akActor.GetLeveledActorBase().GetSex() == 0		;male
-			;	Sound1 = CORE.Breathing3
-			;	Sound2 = CORE.Breathing4
-			else													;no beasts :/
-				;debug.Notification("Actor is beast, Breathing effect stopping")
+			elseif akActor.GetLeveledActorBase().GetSex() == 0	;male
+				Sound1 = CORE.Breathing3
+				Sound2 = CORE.Breathing4
+			else												;no beasts
 				akActor.RemoveSpell(CORE.DW_Breath_Spell)
 				return
 			endif
 
-			if  rank >= CORE.DW_effects_heavy.GetValue()		;high arousal
+			if  rank >= StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66)		;high arousal
 				if Sound1ID != 0
 					;debug.Notification(Sound1ID+" Breath1 stop")
 					Sound.StopInstance(Sound1ID)
@@ -53,7 +55,7 @@ Event OnUpdate()
 					;debug.Notification(Sound2ID+" Breath2 update")
 					Sound.SetInstanceVolume(Sound2ID, strSound)
 				endif
-			elseif rank >= CORE.DW_effects_light.GetValue()		;low arousal
+			elseif rank >= StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33)		;low arousal
 				if Sound2ID != 0
 					;debug.Notification(Sound2ID+" Breath2 stop")
 					Sound.StopInstance(Sound2ID)
@@ -67,8 +69,12 @@ Event OnUpdate()
 					;debug.Notification(Sound1ID+" Breath1 update")
 					Sound.SetInstanceVolume(Sound1ID, strSound)
 				endif
+			else												;no arousal
+				;debug.Notification("Arousal too low, Breathing effect stopping " +Sound1ID + " | " + Sound2ID)
+				akActor.RemoveSpell(CORE.DW_Breath_Spell)
+				return
 			endif
-			RegisterForSingleUpdate(CORE.DW_SpellsUpdateTimer.GetValue())
+			RegisterForSingleUpdate(StorageUtil.GetIntValue(none,"DW.DW_SpellsUpdateTimer", 1))
 			return
 		endif
 	endif
@@ -76,9 +82,16 @@ Event OnUpdate()
 EndEvent
 
 Event OnEffectFinish( Actor akTarget, Actor akCaster )
-	;debug.Notification("Breath1+2 removed")
-	Sound.StopInstance(Sound1ID)
-	Sound.StopInstance(Sound2ID)
-	Sound1ID = 0
-	Sound2ID = 0
+	if Sound1ID != 0
+		Sound.StopInstance(Sound1ID)
+		;debug.Notification("Breath1 removed")
+	endif
+	if Sound1ID != 0
+		Sound.StopInstance(Sound2ID)
+		;debug.Notification("Breath2 removed")
+	endif
+	if StorageUtil.FormListHas(none, "DW.Actors", akActor)
+		StorageUtil.FormListRemove(none, "DW.Actors", akActor)
+	endIf
+	UnRegisterForUpdate()
 EndEvent

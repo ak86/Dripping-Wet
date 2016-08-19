@@ -1,5 +1,9 @@
 Scriptname DW_DDi extends Quest
 
+Event OnInit()
+	StorageUtil.SetIntValue(none,"DW.PluginsCheck.ddi",1)
+EndEvent
+
 bool Function IsIntegraged ()
 	Return False
 EndFunction

@@ -1,5 +1,9 @@
 Scriptname DW_zbf extends Quest
 
+Event OnInit()
+	StorageUtil.SetIntValue(none,"DW.PluginsCheck.zbf",2)
+EndEvent
+
 bool Function IsIntegraged ()
 	Return True
 EndFunction

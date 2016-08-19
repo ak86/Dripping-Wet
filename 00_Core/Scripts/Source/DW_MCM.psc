@@ -8,14 +8,14 @@ bool ResetVC = false
 bool ResetVL = false
 
 Function Maintenance()
-	if CORE.DW_effects_heavy.GetValue() < 0 || CORE.DW_effects_heavy.GetValue() == 100
-		CORE.DW_effects_heavy.SetValue(66)
+	if StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66) < 0 || StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66) == 100
+		StorageUtil.SetIntValue(none,"DW.DW_effects_heavy", 66)
 	endif
-	if CORE.DW_effects_light.GetValue() < 0 || CORE.DW_effects_light.GetValue() == 100
-		CORE.DW_effects_light.SetValue(33)
+	if StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33) < 0 || StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33) == 100
+		StorageUtil.SetIntValue(none,"DW.DW_effects_light", 33)
 	endif
-	if CORE.DW_effects_light.GetValue() >= CORE.DW_effects_heavy.GetValue() && CORE.DW_effects_heavy.GetValue() >= 1
-		CORE.DW_effects_light.SetValue(CORE.DW_effects_heavy.GetValue() - 1)
+	if StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33) >= StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66) && StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66) >= 1
+		StorageUtil.SetIntValue(none,"DW.DW_effects_light", StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66) - 1)
 	endif
 	
 	Actor PlayerRef = Game.GetPlayer()
@@ -31,14 +31,14 @@ Function Maintenance()
 EndFunction
 
 event OnConfigInit()
-    ;ModName = "DW"
+    ModName = "Dripping When Aroused"
 	self.RefreshStrings()
 endEvent
 
 Function RefreshStrings()
 	Pages = new string[2]
-	Pages[0] = "Settings"
-	Pages[1] = "Virginity"
+	Pages[0] = "$DW_SETTINGS"
+	Pages[1] = "$DW_VIRGINITY"
 endFunction
 
 event OnPageReset(string page)
@@ -48,9 +48,9 @@ event OnPageReset(string page)
 ;		self.UnloadCustomContent()
 ;	endif
 
-	if page == "Settings"
+	if page == "$DW_SETTINGS"
 		self.Page_Settings()
-	elseif page == "Virginity"
+	elseif page == "$DW_VIRGINITY"
 		self.Page_Virginity()
 	endif
 
@@ -58,71 +58,88 @@ endEvent
 
 function Page_Settings()
 	SetCursorFillMode(TOP_TO_BOTTOM)
-		AddHeaderOption("Configuration")
-			AddSliderOptionST("DW_Timer_Slider", "Script Polling rate", CORE.DW_Timer.GetValue() as int, "{0} sec")
-			AddSliderOptionST("DW_SpellsUpdateTimer_Slider", "Effects Polling rate", CORE.DW_SpellsUpdateTimer.GetValue() as int, "{0} sec")
+		AddHeaderOption("$DW_CONFIG")
+			AddSliderOptionST("DW_Timer_Slider", "$DW_SCRIPTPOLLRATE", StorageUtil.GetIntValue(none,"DW.DW_Timer", 10), "$DW_SECONDS")
+			AddSliderOptionST("DW_SpellsUpdateTimer_Slider", "$DW_EFFECTPOLLRATE", StorageUtil.GetIntValue(none,"DW.DW_SpellsUpdateTimer", 1), "$DW_SECONDS")
 			AddEmptyOption()
 
-			AddToggleOptionST("PreDripping_Toggle", "Dripping Arousal effect", CORE.DW_ModState01.GetValue())
-			AddSliderOptionST("Arousal_threshold_Slider", "Dripping Arousal threshold", CORE.DW_Arousal_threshold.GetValue() as int)
+			AddToggleOptionST("PreDripping_Toggle", "$DW_DRIPAROUSALEFF", CORE.DW_ModState01.GetValue())
+			AddSliderOptionST("Arousal_threshold_Slider", "$DW_DRIPAROUSALTHRES", StorageUtil.GetIntValue(none,"DW.Arousal_threshold", 50))
 			AddEmptyOption()
 
-			AddToggleOptionST("Cloak_Toggle", "NPC Dripping Cloak", CORE.DW_Cloak.GetValue())
-			AddSliderOptionST("Cloak_Range_Slider", "Cloak range", CORE.DW_Cloak_Range.GetValue() as int)
+			AddToggleOptionST("Cloak_Toggle", "$DW_NPCDRIPCLOAK", StorageUtil.GetIntValue(none,"DW.DW_Cloak", 1))
+			AddSliderOptionST("Cloak_Range_Slider", "$DW_CLOAKRANGE", CORE.DW_Cloak_Range.GetValue() as int)
 			AddEmptyOption()
 			
 		
-			AddToggleOptionST("CumDripping_Toggle", "Dripping Cum Effect", CORE.DW_ModState02.GetValue())
-			AddToggleOptionST("SquirtDripping_Toggle", "Female Squirt effect", CORE.DW_ModState03.GetValue())
+			AddToggleOptionST("CumDripping_Toggle", "$DW_DRIPCUMEFF", CORE.DW_ModState02.GetValue())
+			AddToggleOptionST("SquirtDripping_Toggle", "$DW_FEMSQUIRTEFF", CORE.DW_ModState03.GetValue())
 			AddEmptyOption()
 
-			AddToggleOptionST("GagDrooling_Toggle", "Gag drooling effect", CORE.DW_ModState04.GetValue())
+			AddToggleOptionST("GagDrooling_Toggle", "$DW_GAGDROOLEFF", CORE.DW_ModState04.GetValue())
 			AddEmptyOption()
 
-			AddToggleOptionST("VLE_Toggle", "Virginity loss effect", CORE.DW_ModState13.GetValue())
-			;AddToggleOptionST("VLT_Toggle", "Virginity loss texture", CORE.DW_ModState14.GetValue())
-			AddToggleOptionST("VLM_Toggle", "Virginity messages", CORE.DW_ModState15.GetValue())
-			AddToggleOptionST("VLISLS_Toggle", "Ignore SL stats", CORE.bSLStatsIgnore)
+			AddToggleOptionST("VLE_Toggle", "$DW_VIRGINLOSSEFF", CORE.DW_ModState13.GetValue())
+			;AddToggleOptionST("VLT_Toggle", "$DW_VIRGINLOSSTEX", CORE.DW_ModState14.GetValue())
+			AddToggleOptionST("VLM_Toggle", "$DW_VIRGINMSG", CORE.DW_ModState15.GetValue())
+			AddToggleOptionST("VLISLS_Toggle", "$DW_IGNORESLSTAT", StorageUtil.GetIntValue(none,"DW.bSLStatsIgnore"))
 			AddEmptyOption()
 
-			AddSliderOptionST("DW_effects_light_Slider", "Light Arousal effects threshold", CORE.DW_effects_light.GetValue() as int)
-			AddSliderOptionST("DW_effects_heavy_Slider", "Heavy Arousal effects threshold", CORE.DW_effects_heavy.GetValue() as int)
+			;AddToggleOptionST("DW_effects_Toggler", "DW_USOP", StorageUtil.GetIntValue(none,"DW.bUseSpells"))
 			AddEmptyOption()
 
-			AddToggleOptionST("Visual_Toggle", "Heavy Visuals effect", CORE.DW_ModState05.GetValue())
-			AddToggleOptionST("Light_Visual_Toggle", "Light Visuals effect", CORE.DW_ModState07.GetValue())
-			AddToggleOptionST("Visual_Disable_Toggle", "Disable during Sl anim", CORE.DW_ModState09.GetValue())
+			AddSliderOptionST("DW_effects_light_Slider", "$DW_LIGHTAROUSALEFFTHRES", StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33))
+			AddSliderOptionST("DW_effects_heavy_Slider", "$DW_HEAVYAROUSALEFFTHRES", StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66))
 			AddEmptyOption()
 
-			AddToggleOptionST("Heart_Toggle", "Heartbeat effect", CORE.DW_ModState06.GetValue())
-			AddToggleOptionST("Breathing_Toggle", "Breathing effect", CORE.DW_ModState08.GetValue())
-			AddToggleOptionST("HeartVol_Toggle", "Heartbeat max volume", CORE.DW_ModState11.GetValue())
-			AddToggleOptionST("BreathingVol_Toggle", "Breathing max volume", CORE.DW_ModState12.GetValue())
-			AddToggleOptionST("Breathing_NPC_Toggle", "NPC Breathing effect", CORE.DW_ModState00.GetValue())
-			AddToggleOptionST("Sound_Disable_Toggle", "Disable during Sl anim", CORE.DW_ModState10.GetValue())
+			AddToggleOptionST("Visual_Toggle", "$DW_HEAVYVISEFF", CORE.DW_ModState05.GetValue())
+			AddToggleOptionST("Light_Visual_Toggle", "$DW_LIGHTVISEFF", CORE.DW_ModState07.GetValue())
+			AddToggleOptionST("Visual_Disable_Toggle", "$DW_DISABLEVISINSLANIM", CORE.DW_ModState09.GetValue())
+			AddEmptyOption()
+
+			AddToggleOptionST("Heart_Toggle", "$DW_HEARTBEATEFF", CORE.DW_ModState06.GetValue())
+			AddToggleOptionST("Breathing_Toggle", "$DW_BREATHEFF", CORE.DW_ModState08.GetValue())
+			AddToggleOptionST("HeartVol_Toggle", "$DW_HEARTBEATMAXVOL", CORE.DW_ModState11.GetValue())
+			AddToggleOptionST("BreathingVol_Toggle", "$DW_BREATHMAXVOL", CORE.DW_ModState12.GetValue())
+			AddToggleOptionST("Breathing_NPC_Toggle", "$DW_NPCBREATHEFF", CORE.DW_ModState00.GetValue())
+			AddToggleOptionST("Sound_Disable_Toggle", "$DW_DISABLESNDINSLANIM", CORE.DW_ModState10.GetValue())
 			AddEmptyOption()
 
 	SetCursorPosition(1)
-		AddHeaderOption("Affected actors")
-			int i = 0
-			while i <= CORE.DW_Actors.GetSize()
-				if CORE.DW_Actors.GetAt(i) != None
-					AddTextOption((CORE.DW_Actors.GetAt(i) as Actor).GetLeveledActorBase().GetName(), OPTION_FLAG_DISABLED)
-				endif
-				i += 1
-			endwhile
+		AddHeaderOption("$DW_PSE")
+		Actor PlayerRef = Game.GetPlayer()
+			if PlayerRef.HasMagicEffect(Game.GetFormFromFile(0x9eef , "DW.esp") as magiceffect)
+					AddTextOption("$DW_PHVE", OPTION_FLAG_DISABLED)
+			endIf
+			if PlayerRef.HasMagicEffect(Game.GetFormFromFile(0x9ef0 , "DW.esp") as magiceffect)
+					AddTextOption("$DW_PHBE", OPTION_FLAG_DISABLED)
+			endIf
+			if PlayerRef.HasMagicEffect(Game.GetFormFromFile(0x9ef1 , "DW.esp") as magiceffect)
+					AddTextOption("$DW_PHHE", OPTION_FLAG_DISABLED)
+			endIf
+			AddEmptyOption()
+		AddHeaderOption("$DW_AFFECTEDACTORS")
+			int i = StorageUtil.FormListCount(none, "DW.Actors")
+				while(i > 0)
+					i -= 1
+					Actor Actors = StorageUtil.FormListGet(none, "DW.Actors", i) as Actor
+					if Actors != None
+						AddTextOption(Actors.GetLeveledActorBase().GetName(), OPTION_FLAG_DISABLED)
+					endif
+				endwhile
 endfunction
 
 function Page_Virginity()
 	SetCursorFillMode(TOP_TO_BOTTOM)
-		if CORE.PlayerVirginityLoss > 1
-		AddHeaderOption("Player virginities lost")
-			AddTextOption("Total:", CORE.PlayerVirginityLoss, OPTION_FLAG_DISABLED)
+		if StorageUtil.GetIntValue(none,"DW.PlayerVirginityLoss", 0) > 0
+			AddHeaderOption("$DW_PCVIRGINLOST")
+				AddTextOption("$DW_TOTAL", StorageUtil.GetIntValue(none,"DW.PlayerVirginityLoss", 0), OPTION_FLAG_DISABLED)
 		endif
-		AddHeaderOption("Player virginities claimed")
-			AddTextOption("Total:", CORE.DW_VirginsClaimed.GetSize(), OPTION_FLAG_DISABLED)
-			AddTextOption("Since game start:", CORE.DW_VirginsClaimedTG.GetSize(), OPTION_FLAG_DISABLED)
-			Page_Virginity_VC_OID = AddToggleOption("Reset", ResetVC)
+		
+		AddHeaderOption("$DW_PCVIRGINSCLAIMED")
+			AddTextOption("$DW_TOTAL", CORE.DW_VirginsClaimed.GetSize(), OPTION_FLAG_DISABLED)
+			AddTextOption("$DW_SINCEGAMESTART", CORE.DW_VirginsClaimedTG.GetSize(), OPTION_FLAG_DISABLED)
+			Page_Virginity_VC_OID = AddToggleOption("$DW_RESET", ResetVC)
 			int i = 0
 			while i <= CORE.DW_VirginsClaimed.GetSize()
 				if CORE.DW_VirginsClaimed.GetAt(i) != None
@@ -132,9 +149,10 @@ function Page_Virginity()
 			endwhile
 
 	SetCursorPosition(1)
-		AddHeaderOption("Skyrim virginities lost")
-			AddTextOption("Total:", CORE.DW_VirginsList.GetSize(), OPTION_FLAG_DISABLED)
-			Page_Virginity_VL_OID = AddToggleOption("Reset", ResetVL)
+		AddHeaderOption("$DW_NPCSVIRGNLOST")
+			AddTextOption("$DW_TOTAL", CORE.DW_VirginsList.GetSize(), OPTION_FLAG_DISABLED)
+			Page_Virginity_VL_OID = AddToggleOption("$DW_RESET", ResetVL)
+			
 			i = 0
 			while i <= CORE.DW_VirginsList.GetSize()
 				if CORE.DW_VirginsList.GetAt(i) != None
@@ -146,16 +164,16 @@ endfunction
 
 state Cloak_Toggle
 	event OnSelectST()
-		if CORE.DW_Cloak.GetValue() != 1
-			CORE.DW_Cloak.SetValue(1)
+		if StorageUtil.GetIntValue(none,"DW.DW_Cloak", 1) != 1
+			StorageUtil.SetIntValue(none,"DW.DW_Cloak", 1)
 		else
-			CORE.DW_Cloak.SetValue(0)
+			StorageUtil.SetIntValue(none,"DW.DW_Cloak", 0)
 		endif
-		SetToggleOptionValueST(CORE.DW_Cloak.GetValue())
+		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.DW_Cloak", 1))
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Cloak for NPCs dripping,gag,breath effects")
+		SetInfoText("$DW_NPCDRIPCLOAK_DESC")
 	endEvent
 endState
 
@@ -184,25 +202,25 @@ state PreDripping_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Female arousal dripping effect")
+		SetInfoText("$DW_DRIPAROUSALEFF_DESC")
 	endEvent
 endState
 
 state Arousal_threshold_Slider
 	event OnSliderOpenST()
-		SetSliderDialogStartValue(CORE.DW_Arousal_threshold.GetValue())
+		SetSliderDialogStartValue(StorageUtil.GetIntValue(none,"DW.Arousal_threshold", 50))
 		SetSliderDialogDefaultValue(50)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(1)
 	endEvent
 
 	event OnSliderAcceptST(float value)
-		CORE.DW_Arousal_threshold.SetValue(value)
-		SetSliderOptionValueST(CORE.DW_Arousal_threshold.GetValue())
+		StorageUtil.SetIntValue(none,"DW.Arousal_threshold", value as int)
+		SetSliderOptionValueST(StorageUtil.GetIntValue(none,"DW.Arousal_threshold"))
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Amount of arousal required for dripping effect")
+		SetInfoText("$DW_DRIPAROUSALTHRES_DESC")
 	endEvent
 endState
 
@@ -217,7 +235,7 @@ state CumDripping_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Cum dripping after Anal or Vaginal Sexlab animation, if 1 of actors is male or has SOS")
+		SetInfoText("$DW_DRIPCUMEFF_DESC")
 	endEvent
 endState
 
@@ -232,7 +250,7 @@ state SquirtDripping_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Female squirting during Sexlab orgasm ")
+		SetInfoText("$DW_FEMSQUIRTEFF_DESC")
 	endEvent
 endState
 
@@ -247,7 +265,7 @@ state GagDrooling_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Gag drooling with ZAZap and DDIntegration Gags")
+		SetInfoText("$DW_GAGDROOLEFF_DESC")
 	endEvent
 endState
 
@@ -262,7 +280,7 @@ state VLE_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Bleed effect")
+		SetInfoText("$DW_VIRGINLOSSEFF_DESC")
 	endEvent
 endState
 
@@ -277,7 +295,7 @@ state VLT_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Gag drooling with ZAZap and DDIntegration Gags")
+		SetInfoText("$DW_VIRGINLOSSTEX_DESC")
 	endEvent
 endState
 
@@ -292,22 +310,37 @@ state VLM_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("1,5,10,15,25")
+		SetInfoText("$DW_VIRGINMSG_DESC")
 	endEvent
 endState
 
 state VLISLS_Toggle
 	event OnSelectST()
-		if CORE.bSLStatsIgnore != true
-			CORE.bSLStatsIgnore = true
+		if StorageUtil.GetIntValue(none,"DW.bSLStatsIgnore", 0)
+			StorageUtil.SetIntValue(none,"DW.bSLStatsIgnore", 1)
 		else
-			CORE.bSLStatsIgnore = false
+			StorageUtil.SetIntValue(none,"DW.bSLStatsIgnore", 0)
 		endif
-		SetToggleOptionValueST(CORE.bSLStatsIgnore)
+		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.bSLStatsIgnore"))
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("ON:Ignore Sexlab Stats, use DW virginity detection")
+		SetInfoText("$DW_IGNORESLSTAT_DESC")
+	endEvent
+endState
+
+state DW_effects_Toggler
+	event OnSelectST()
+		if StorageUtil.GetIntValue(none,"DW.bUseSpells")
+			StorageUtil.SetIntValue(none,"DW.bUseSpells", 1)
+		else
+			StorageUtil.SetIntValue(none,"DW.bUseSpells", 0)
+		endif
+		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.bUseSpells"))
+	endEvent
+	
+	event OnHighlightST()
+		SetInfoText("$DW_USOP_DESC")
 	endEvent
 endState
 
@@ -323,7 +356,7 @@ state Visual_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Player high arousal visuals")
+		SetInfoText("$DW_HEAVYVISEFF_DESC")
 	endEvent
 endState
 
@@ -339,7 +372,7 @@ state Light_Visual_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Player low arousal visuals")
+		SetInfoText("$DW_LIGHTVISEFF_DESC")
 	endEvent
 endState
 
@@ -354,7 +387,7 @@ state Visual_Disable_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Disable visuals during sexlab animation")
+		SetInfoText("$DW_DISABLEVISINSLANIM_DESC")
 	endEvent
 endState
 
@@ -370,7 +403,7 @@ state Heart_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Player arousal heartbeat sound")
+		SetInfoText("$DW_HEARTBEATEFF_DESC")
 	endEvent
 endState
 
@@ -386,7 +419,7 @@ state Breathing_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Player arousal breathing sound")
+		SetInfoText("$DW_BREATHEFF_DESC")
 	endEvent
 endState
 
@@ -402,7 +435,7 @@ state HeartVol_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Use always max volume for heartbeat sound instead of arousal based")
+		SetInfoText("$DW_HEARTBEATMAXVOL_DESC")
 	endEvent
 endState
 
@@ -418,7 +451,7 @@ state BreathingVol_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Use always max volume for breathing sound instead of arousal based")
+		SetInfoText("$DW_BREATHMAXVOL_DESC")
 	endEvent
 endState
 
@@ -434,7 +467,7 @@ state Breathing_NPC_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Npc arousal breathing sound")
+		SetInfoText("$DW_NPCBREATHEFF_DESC")
 	endEvent
 endState
 
@@ -449,7 +482,7 @@ state Sound_Disable_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Disable heart/breath sound during sexlab animation")
+		SetInfoText("$DW_DISABLESNDINSLANIM_DESC")
 	endEvent
 endState
 
@@ -464,7 +497,7 @@ state Virginity_BloodLeak_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Disable virginity loss bleeding effect")
+		SetInfoText("$DW_VIRGINBLOOD_DESC")
 	endEvent
 endState
 
@@ -479,7 +512,7 @@ state Virginity_BloodTexture_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Disable virginity loss bleeding textures")
+		SetInfoText("$DW_VIRGINBLOODTEX_DESC")
 	endEvent
 endState
 
@@ -494,81 +527,81 @@ state Virginity_Messages_Toggle
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Disable virginity claim messages")
+		SetInfoText("$DW_VIRGINCLAIMEDMSG_DESC")
 	endEvent
 endState
 
 state DW_Timer_Slider
 	event OnSliderOpenST()
-		SetSliderDialogStartValue(CORE.DW_Timer.GetValue())
+		SetSliderDialogStartValue(StorageUtil.GetIntValue(none,"DW.DW_Timer", 10))
 		SetSliderDialogDefaultValue(10)
 		SetSliderDialogRange(5, 120)
 		SetSliderDialogInterval(1)
 	endEvent
 
 	event OnSliderAcceptST(float value)
-		CORE.DW_Timer.SetValue(value)
-		SetSliderOptionValueST(CORE.DW_Timer.GetValue(), "{0} sec")
+		StorageUtil.SetIntValue(none,"DW.DW_Timer", value as int)
+		SetSliderOptionValueST(StorageUtil.GetIntValue(none,"DW.DW_Timer", 10), "$DW_SECONDS")
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Cloak polling rate, PC and NPC")
+		SetInfoText("$DW_SCRIPTPOLLRATE_DESC")
 	endEvent
 endState
 
 state DW_SpellsUpdateTimer_Slider
 	event OnSliderOpenST()
-		SetSliderDialogStartValue(CORE.DW_SpellsUpdateTimer.GetValue())
+		SetSliderDialogStartValue(StorageUtil.GetIntValue(none,"DW.DW_SpellsUpdateTimer", 1))
 		SetSliderDialogDefaultValue(1)
 		SetSliderDialogRange(1, 60)
 		SetSliderDialogInterval(1)
 	endEvent
 
 	event OnSliderAcceptST(float value)
-		CORE.DW_SpellsUpdateTimer.SetValue(value)
-		SetSliderOptionValueST(CORE.DW_SpellsUpdateTimer.GetValue(), "{0} sec")
+		StorageUtil.SetIntValue(none,"DW.DW_SpellsUpdateTimer", value as int)
+		SetSliderOptionValueST(StorageUtil.GetIntValue(none,"DW.DW_SpellsUpdateTimer", 1), "$DW_SECONDS")
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Visuals(PC), sound effects(PC, NPCs) spells polling rate")
+		SetInfoText("$DW_EFFECTPOLLRATE_DESC")
 	endEvent
 endState
 
 state DW_effects_light_Slider
 	event OnSliderOpenST()
-		SetSliderDialogStartValue(CORE.DW_effects_light.GetValue())
+		SetSliderDialogStartValue(StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33))
 		SetSliderDialogDefaultValue(33)
 		SetSliderDialogRange(1, 99)
 		SetSliderDialogInterval(1)
 	endEvent
 
 	event OnSliderAcceptST(float value)
-		CORE.DW_effects_light.SetValue(value)
-		SetSliderOptionValueST(CORE.DW_effects_light.GetValue())
+		StorageUtil.SetIntValue(none,"DW.DW_effects_light", value as int)
+		SetSliderOptionValueST(StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33))
 		Maintenance()
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Amount of arousal required for light visual/sound effects")
+		SetInfoText("$DW_LIGHTAROUSALEFFTHRES_DESC")
 	endEvent
 endState
 
 state DW_effects_heavy_Slider
 	event OnSliderOpenST()
-		SetSliderDialogStartValue(CORE.DW_effects_heavy.GetValue())
+		SetSliderDialogStartValue(StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66))
 		SetSliderDialogDefaultValue(66)
 		SetSliderDialogRange(1, 99)
 		SetSliderDialogInterval(1)
 	endEvent
 
 	event OnSliderAcceptST(float value)
-		CORE.DW_effects_heavy.SetValue(value)
-		SetSliderOptionValueST(CORE.DW_effects_heavy.GetValue())
+		StorageUtil.SetIntValue(none,"DW.DW_effects_heavy", value as int)
+		SetSliderOptionValueST(StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66))
 		Maintenance()
 	endEvent
 	
 	event OnHighlightST()
-		SetInfoText("Amount of arousal required for heavy visual/sound effects")
+		SetInfoText("$DW_HEAVYAROUSALEFFTHRES_DESC")
 	endEvent
 endState
 
@@ -578,7 +611,7 @@ event OnOptionSelect(int option)
 		SetToggleOptionValue(Page_Virginity_VC_OID, true)
 		ResetVC = false
 	elseif option == Page_Virginity_VL_OID
-		CORE.bPlayerIsVirgin = true
+		StorageUtil.SetIntValue(none,"DW.bPlayerIsVirgin", 1)
 		CORE.DW_VirginsList.Revert()
 		SetToggleOptionValue(Page_Virginity_VL_OID, true)
 		ResetVL = false
