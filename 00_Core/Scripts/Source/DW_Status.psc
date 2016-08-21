@@ -6,7 +6,7 @@ EndEvent
 
 Event OnUpdate()
 	if StorageUtil.GetIntValue(none,"DW.PluginsCheck.scripts") != 1
-		Debug.Messagebox("$DW_INSTFAILED")
+		Debug.Messagebox("Dripping when aroused was not installed correctly, scripts are not running.\n This can be false alarm when starting new game but if message keeps repeating, then something is wrong, reinstall with correct plugins.")
 		DWPluginsInfo()
 		RegisterForSingleUpdate(10)
 	endif
