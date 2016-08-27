@@ -74,6 +74,7 @@ function Page_Settings()
 		
 			AddToggleOptionST("CumDripping_Toggle", "$DW_DRIPCUMEFF", CORE.DW_ModState02.GetValue())
 			AddToggleOptionST("SquirtDripping_Toggle", "$DW_FEMSQUIRTEFF", CORE.DW_ModState03.GetValue())
+			AddSliderOptionST("SquirtDrippingChance_Slider", "$DW_FEMSQUIRTCHANCE", StorageUtil.GetIntValue(none,"DW.SquirtChance", 50))
 			AddEmptyOption()
 
 			AddToggleOptionST("GagDrooling_Toggle", "$DW_GAGDROOLEFF", CORE.DW_ModState04.GetValue())
@@ -251,6 +252,20 @@ state SquirtDripping_Toggle
 	
 	event OnHighlightST()
 		SetInfoText("$DW_FEMSQUIRTEFF_DESC")
+	endEvent
+endState
+
+state SquirtDrippingChance_Slider
+	event OnSliderOpenST()
+		SetSliderDialogStartValue(StorageUtil.GetIntValue(none,"DW.SquirtChance", 50))
+		SetSliderDialogDefaultValue(50)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+	endEvent
+
+	event OnSliderAcceptST(float value)
+		StorageUtil.SetIntValue(none,"DW.SquirtChance", value as int)
+		SetSliderOptionValueST(StorageUtil.GetIntValue(none,"DW.SquirtChance"))
 	endEvent
 endState
 

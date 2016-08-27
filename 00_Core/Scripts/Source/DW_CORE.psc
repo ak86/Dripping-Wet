@@ -69,19 +69,22 @@ Event OnSexLabOrgasm(String _eventName, String _args, Float _argc, Form _sender)
 	int idx = 0
 	sslBaseAnimation animation = SexLab.HookAnimation(_args)
 	
+	if DW_ModState03.GetValue() == 1
+		While idx < actors.Length
+			if Utility.RandomInt(0, 100) <= StorageUtil.GetIntValue(none,"DW.SquirtChance", 50)
+				DW_DrippingSquirt_Spell.cast( actors[idx] )
+			endif
+			idx += 1
+		EndWhile
+	endif
+	
 	if DW_ModState02.GetValue() == 1
 		if (animation.HasTag("Anal") || animation.HasTag("Vaginal")) && actors.Length > 1
 			If SOS.GetSOS(actors[1]) == true || actors[1].GetLeveledActorBase().GetSex() != 1
+				Utility.Wait(1.0)
 				DW_DrippingCum_Spell.cast( actors[0] )
 			EndIf
 		endif
-	endif
-	
-	if DW_ModState03.GetValue() == 1
-		While idx < actors.Length
-			DW_DrippingSquirt_Spell.cast( actors[idx] )
-			idx += 1
-		EndWhile
 	endif
 EndEvent
 
