@@ -101,18 +101,25 @@ Event OnSexLabStageChange(String _eventName, String _args, Float _argc, Form _se
 		if animation.HasTag("Vaginal") && actors.Length > 1
 			If SOS.GetSOS(actors[1]) == true || actors[1].GetLeveledActorBase().GetSex() != 1
 				If DW_VirginsList.Find(actors[0]) == -1
-                    If SexLab.HadSex(actors[0]) && (SexLab.GetSkillTitle(actors[0], "kVaginal") > 0)
+					;add non virgin npc to a list
+					;check if actor sl virgin
+                    If SexLab.HadSex(actors[0]) && (SexLab.GetSkillLevel(actors[0], "Vaginal") > 0)
+						;check if we ignore sl stats
 						If StorageUtil.GetIntValue(none,"DW.bSLStatsIgnore") != 1 
-							If !(actors[0] == Game.GetPlayer() && StorageUtil.GetIntValue(none,"DW.bPlayerIsVirgin", 1))
+							;check if actor is  not a player
+							If actors[0] != Game.GetPlayer()
 								DW_VirginsList.AddForm(actors[0])
 								return
 							EndIf
 						EndIf
 					EndIf
+					
+					;player loosing virginity
 					If actors[0] == Game.GetPlayer() && StorageUtil.GetIntValue(none,"DW.bPlayerIsVirgin", 1)
 						debug.Notification("$DW_VIRGINITYLOST")
 						StorageUtil.SetIntValue(none,"DW.bPlayerIsVirgin", 0)
 						StorageUtil.AdjustIntValue(none,"DW.PlayerVirginityLoss", 1)
+					;player claims npc virginity
 					elseif actors[1] == Game.GetPlayer() 
 						debug.Notification("$DW_VIRGINSCLAIMED")
 						DW_VirginsClaimed.AddForm(actors[0])

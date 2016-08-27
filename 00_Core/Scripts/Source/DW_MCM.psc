@@ -316,7 +316,7 @@ endState
 
 state VLISLS_Toggle
 	event OnSelectST()
-		if StorageUtil.GetIntValue(none,"DW.bSLStatsIgnore", 0)
+		if StorageUtil.GetIntValue(none,"DW.bSLStatsIgnore") != 1
 			StorageUtil.SetIntValue(none,"DW.bSLStatsIgnore", 1)
 		else
 			StorageUtil.SetIntValue(none,"DW.bSLStatsIgnore", 0)
