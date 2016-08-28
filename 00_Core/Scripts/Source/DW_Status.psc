@@ -38,10 +38,10 @@ Function DWPluginsInfo()
 	value[3] = StorageUtil.GetIntValue(none,"DW.PluginsCheck.zbf")
 
 
-	name[0] = "MME.PluginsCheck.ddi"
-	name[1] = "MME.PluginsCheck.sla"
-	name[2] = "MME.PluginsCheck.sos"
-	name[3] = "MME.PluginsCheck.zbf"
+	name[0] = "DW.PluginsCheck.ddi"
+	name[1] = "DW.PluginsCheck.sla"
+	name[2] = "DW.PluginsCheck.sos"
+	name[3] = "DW.PluginsCheck.zbf"
 
 	msg = "Dripping Wet plugins check:\n"
 	While i < name.Length
