@@ -86,7 +86,7 @@ Event OnEffectFinish( Actor akTarget, Actor akCaster )
 		Sound.StopInstance(Sound1ID)
 		;debug.Notification("Breath1 removed")
 	endif
-	if Sound1ID != 0
+	if Sound2ID != 0
 		Sound.StopInstance(Sound2ID)
 		;debug.Notification("Breath2 removed")
 	endif
