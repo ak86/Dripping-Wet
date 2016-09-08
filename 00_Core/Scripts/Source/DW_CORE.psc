@@ -102,7 +102,8 @@ Event OnSexLabStageChange(String _eventName, String _args, Float _argc, Form _se
 	
 	if DW_ModState13.GetValue() == 1
 		if animation.HasTag("Vaginal") && actors.Length > 1
-			If SOS.GetSOS(actors[1]) == true || actors[1].GetLeveledActorBase().GetSex() != 1
+			;check if dom actor(1) has penetrator and sub actor(0) has something to penetrate
+			If (SOS.GetSOS(actors[1]) == true || actors[1].GetLeveledActorBase().GetSex() != 1) && actors[0].GetLeveledActorBase().GetSex() == 1
 				If DW_VirginsList.Find(actors[0]) == -1
 					;add non virgin npc to a list
 					;check if actor sl virgin
@@ -122,7 +123,8 @@ Event OnSexLabStageChange(String _eventName, String _args, Float _argc, Form _se
 						debug.Notification("$DW_VIRGINITYLOST")
 						StorageUtil.SetIntValue(none,"DW.bPlayerIsVirgin", 0)
 						StorageUtil.AdjustIntValue(none,"DW.PlayerVirginityLoss", 1)
-					;player claims npc virginity
+
+						;player claims npc virginity
 					elseif actors[1] == Game.GetPlayer() 
 						debug.Notification("$DW_VIRGINSCLAIMED")
 						DW_VirginsClaimed.AddForm(actors[0])
