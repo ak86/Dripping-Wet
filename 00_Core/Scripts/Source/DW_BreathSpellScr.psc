@@ -93,5 +93,4 @@ Event OnEffectFinish( Actor akTarget, Actor akCaster )
 	if StorageUtil.FormListHas(none, "DW.Actors", akActor)
 		StorageUtil.FormListRemove(none, "DW.Actors", akActor)
 	endIf
-	UnRegisterForUpdate()
 EndEvent
