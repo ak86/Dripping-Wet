@@ -35,26 +35,6 @@
 								<type name="Required"/>
 							</typeDescriptor>
 						</plugin>
-						<plugin name="ZaZ Animation Pack">
-							<description>
-							</description>
-							<conditionFlags>
-								<flag name="ZaZ">True</flag>
-							</conditionFlags>
-							<typeDescriptor>
-								<type name="Optional"/>
-							</typeDescriptor>
-						</plugin>
-						<plugin name="Devious Devices integration">
-							<description>
-							</description>
-							<conditionFlags>
-								<flag name="DDi">True</flag>
-							</conditionFlags>
-							<typeDescriptor>
-								<type name="Optional"/>
-							</typeDescriptor>
-						</plugin>
 						<plugin name="Schlongs of Skyrim(FULL)">
 							<description>
 							</description>
@@ -92,22 +72,6 @@
 			</pattern>
 			<pattern>
 				<dependencies operator="And">
-					<flagDependency flag="DDi" value="True"/>
-				</dependencies>
-				<files>
-					<folder source="01_Optional\DDi\True" destination=""/>
-				</files>
-			</pattern>
-			<pattern>
-				<dependencies operator="And">
-					<flagDependency flag="ZaZ" value="True"/>
-				</dependencies>
-				<files>
-					<folder source="01_Optional\ZaZ\True" destination=""/>
-				</files>
-			</pattern>
-			<pattern>
-				<dependencies operator="And">
 					<flagDependency flag="SlA" value="True"/>
 				</dependencies>
 				<files>
@@ -121,22 +85,6 @@
 				</dependencies>
 				<files>
 					<folder source="01_Optional\SoS\False" destination=""/>
-				</files>
-			</pattern>
-			<pattern>
-				<dependencies operator="And">
-					<flagDependency flag="DDi" value=""/>
-				</dependencies>
-				<files>
-					<folder source="01_Optional\DDi\False" destination=""/>
-				</files>
-			</pattern>
-			<pattern>
-				<dependencies operator="And">
-					<flagDependency flag="ZaZ" value=""/>
-				</dependencies>
-				<files>
-					<folder source="01_Optional\ZaZ\False" destination=""/>
 				</files>
 			</pattern>
 			<pattern>
