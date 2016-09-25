@@ -9,10 +9,9 @@ bool Function IsWearingDDGag (Actor akActor)
 	if zad_DeviousGag != none
 		if akActor.WornHasKeyword(zad_DeviousGag)
 			Return true
-		else
-			Return false
 		endif
 	endif
+	Return false
 EndFunction
 
 bool Function IsWearingDDBlindfold (Actor akActor)
@@ -20,8 +19,7 @@ bool Function IsWearingDDBlindfold (Actor akActor)
 	if zad_DeviousBlindfold != none
 		if akActor.WornHasKeyword(zad_DeviousBlindfold)
 			Return true
-		else
-			Return false
 		endif
 	endif
+	Return false
 EndFunction

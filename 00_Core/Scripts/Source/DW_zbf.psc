@@ -9,8 +9,7 @@ bool Function IsWearingZaZGag (Actor akActor)
 	if zbfWornGag != none
 		if akActor.WornHasKeyword(zbfWornGag)
 			Return true
-		else
-			Return false
 		endif
 	endif
+	Return false
 EndFunction
