@@ -37,6 +37,7 @@
 						</plugin>
 						<plugin name="Schlongs of Skyrim(FULL)">
 							<description>
+								Requires Schlongs of Skyrim(FULL)
 							</description>
 							<conditionFlags>
 								<flag name="SoS">True</flag>
@@ -47,6 +48,7 @@
 						</plugin>
 						<plugin name="SexLab Aroused">
 							<description>
+								Requires SexLab Aroused or SexLab Aroused (Redux)
 							</description>
 							<conditionFlags>
 								<flag name="SlA">True</flag>

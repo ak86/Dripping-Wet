@@ -11,11 +11,7 @@ float strSound
 Event OnEffectStart( Actor akTarget, Actor akCaster )
 	akActor = akTarget
 	RegisterForSingleUpdate(1)
-	GoToState("Playing")
 EndEvent
-
-State Playing
-EndState
 
 Event OnUpdate()
 	;sound heartbeat high,low,none

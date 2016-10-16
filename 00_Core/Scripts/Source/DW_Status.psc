@@ -21,15 +21,22 @@ Function DWPluginsInfo()
 	Int[] value = new int[4]
 	;bool ErrorsFound = False
 
-	;individual check to see if scripts working at all, ;stop quest , ;start quest/runs OnInit check
-	Quest.GetQuest("DW_SLA").stop()
-	Quest.GetQuest("DW_SLA").start()
-	Quest.GetQuest("DW_DDi").stop()
-	Quest.GetQuest("DW_DDi").start()
-	Quest.GetQuest("DW_zbf").stop()
-	Quest.GetQuest("DW_zbf").start()
-	Quest.GetQuest("DW_SOS").stop()
-	Quest.GetQuest("DW_SOS").start()
+	;individual check to see if scripts working at all
+	;stop quest
+	;reset quest (so that scripts run OnInit() during quest start)
+	;start quest (OnInit() sends StorageUtil values if script has launched)
+	Quest.GetQuest("DW_Dripping_SLA").stop()
+	Quest.GetQuest("DW_Dripping_SLA").reset()
+	Quest.GetQuest("DW_Dripping_SLA").start()
+	Quest.GetQuest("DW_Dripping_DDi").stop()
+	Quest.GetQuest("DW_Dripping_DDi").reset()
+	Quest.GetQuest("DW_Dripping_DDi").start()
+	Quest.GetQuest("DW_Dripping_zbf").stop()
+	Quest.GetQuest("DW_Dripping_zbf").reset()
+	Quest.GetQuest("DW_Dripping_zbf").start()
+	Quest.GetQuest("DW_Dripping_SOS").stop()
+	Quest.GetQuest("DW_Dripping_SOS").reset()
+	Quest.GetQuest("DW_Dripping_SOS").start()
 	utility.wait(1) ; wait for quests startup and do their OnInit()
 
 	value[0] = StorageUtil.GetIntValue(none,"DW.PluginsCheck.ddi")
