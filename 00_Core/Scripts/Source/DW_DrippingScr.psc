@@ -75,7 +75,9 @@ Event OnUpdate()
 
 		;dripping wet pc
 		if CORE.SLA.GetActorArousal(akActor) >= DW_Arousal_threshold
-			akActor.AddSpell( CORE.DW_Dripping_Spell, false )
+			if (CORE.SexLab.GetGender( akActor ) == 0 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") == 1) || StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") == 1
+				akActor.AddSpell( CORE.DW_Dripping_Spell, false )
+			endif
 		endif
 		
 		;dripping gag pc
@@ -95,7 +97,9 @@ Event OnUpdate()
 			if aNPC != none
 				;dripping wet npc
 				If CORE.SLA.GetActorArousal(aNPC) >= DW_Arousal_threshold
-					CORE.DW_Dripping_Spell.cast( aNPC )
+					If (CORE.SexLab.GetGender( aNPC ) == 0 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") == 1) || StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") == 1
+						CORE.DW_Dripping_Spell.cast( aNPC )
+					EndIf
 				EndIf
 				
 				;dripping gag npc

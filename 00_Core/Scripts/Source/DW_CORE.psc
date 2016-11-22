@@ -49,6 +49,8 @@ ImageSpaceModifier Property HighArousalVisual Auto
 ImageSpaceModifier Property LowArousalVisual Auto
 
 ;StorageUtil.SetIntValue(none,"DW.bAnimating", 1) ;SL player animation detection for stopping sound/visual effects
+;StorageUtil.SetIntValue(none,"DW.UseSLGenderForSquirt", 1)
+;StorageUtil.SetIntValue(none,"DW.UseSLGenderForDripp", 1)
 
 Event RV(Form apForm)
 	Actor akActor = apForm as Actor
@@ -72,7 +74,9 @@ Event OnSexLabOrgasm(String _eventName, String _args, Float _argc, Form _sender)
 	if DW_ModState03.GetValue() == 1
 		While idx < actors.Length
 			if Utility.RandomInt(0, 100) <= StorageUtil.GetIntValue(none,"DW.SquirtChance", 50)
-				DW_DrippingSquirt_Spell.cast( actors[idx] )
+				if (SexLab.GetGender( actors[idx] ) == 0 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1) || StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1
+					DW_DrippingSquirt_Spell.cast( actors[idx] )
+				endif
 			endif
 			idx += 1
 		EndWhile
@@ -91,7 +95,9 @@ EndEvent
 Event OnDDOrgasm(string eventName, string argString, float argNum, form sender)
 	Actor akActor = Game.GetPlayer()
 	if DW_ModState03.GetValue() == 1 && akActor.GetLeveledActorBase().GetName() == argString
-		DW_DrippingSquirt_Spell.cast( akActor )
+		if (SexLab.GetGender( akActor ) == 0 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1) || StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1
+			DW_DrippingSquirt_Spell.cast( akActor )
+		endif
 	endif
 EndEvent
 

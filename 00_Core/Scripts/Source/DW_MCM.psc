@@ -65,6 +65,7 @@ function Page_Settings()
 
 			AddToggleOptionST("PreDripping_Toggle", "$DW_DRIPAROUSALEFF", CORE.DW_ModState01.GetValue())
 			AddSliderOptionST("Arousal_threshold_Slider", "$DW_DRIPAROUSALTHRES", StorageUtil.GetIntValue(none,"DW.Arousal_threshold", 50))
+			AddToggleOptionST("DrippingSLGender_Toggle", "$DW_DRIPAROUSALEFFSLGender", StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp"))
 			AddEmptyOption()
 
 			AddToggleOptionST("Cloak_Toggle", "$DW_NPCDRIPCLOAK", StorageUtil.GetIntValue(none,"DW.DW_Cloak", 1))
@@ -75,6 +76,7 @@ function Page_Settings()
 			AddToggleOptionST("CumDripping_Toggle", "$DW_DRIPCUMEFF", CORE.DW_ModState02.GetValue())
 			AddToggleOptionST("SquirtDripping_Toggle", "$DW_FEMSQUIRTEFF", CORE.DW_ModState03.GetValue())
 			AddSliderOptionST("SquirtDrippingChance_Slider", "$DW_FEMSQUIRTCHANCE", StorageUtil.GetIntValue(none,"DW.SquirtChance", 50))
+			AddToggleOptionST("SquirtSLGender_Toggle", "$DW_FEMSQUIRTEFFSLGender", StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt"))
 			AddEmptyOption()
 
 			AddToggleOptionST("GagDrooling_Toggle", "$DW_GAGDROOLEFF", CORE.DW_ModState04.GetValue())
@@ -207,6 +209,17 @@ state PreDripping_Toggle
 	endEvent
 endState
 
+state DrippingSLGender_Toggle
+	event OnSelectST()
+		if StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") != 1
+			StorageUtil.SetIntValue(none,"DW.UseSLGenderForDripp", 1)
+		else
+			StorageUtil.SetIntValue(none,"DW.UseSLGenderForDripp", 0)
+		endif
+		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp"))
+	endEvent
+endState
+
 state Arousal_threshold_Slider
 	event OnSliderOpenST()
 		SetSliderDialogStartValue(StorageUtil.GetIntValue(none,"DW.Arousal_threshold", 50))
@@ -252,6 +265,17 @@ state SquirtDripping_Toggle
 	
 	event OnHighlightST()
 		SetInfoText("$DW_FEMSQUIRTEFF_DESC")
+	endEvent
+endState
+
+state SquirtSLGender_Toggle
+	event OnSelectST()
+		if StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") != 1
+			StorageUtil.SetIntValue(none,"DW.UseSLGenderForSquirt", 1)
+		else
+			StorageUtil.SetIntValue(none,"DW.UseSLGenderForSquirt", 0)
+		endif
+		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt"))
 	endEvent
 endState
 
