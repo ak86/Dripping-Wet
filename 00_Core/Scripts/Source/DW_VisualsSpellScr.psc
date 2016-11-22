@@ -1,7 +1,5 @@
 Scriptname DW_VisualsSpellScr extends activemagiceffect
 
-DW_CORE property CORE auto
-
 Actor akActor
 
 float strVisual
@@ -12,6 +10,7 @@ Event OnEffectStart( Actor akTarget, Actor akCaster )
 EndEvent
 
 Event OnUpdate()
+	DW_CORE CORE = Quest.GetQuest("DW_Dripping") as DW_CORE
 	if StorageUtil.FormListHas(none, "DW.Actors", akActor)
 		StorageUtil.FormListAdd(none, "DW.Actors", akActor, false)
 	endIf
@@ -43,6 +42,7 @@ Event OnUpdate()
 EndEvent
 
 Event OnEffectFinish( Actor akTarget, Actor akCaster )
+	DW_CORE CORE = Quest.GetQuest("DW_Dripping") as DW_CORE
 	CORE.HighArousalVisual.Remove()
 	CORE.LowArousalVisual.Remove()
 	if StorageUtil.FormListHas(none, "DW.Actors", akActor)

@@ -1,7 +1,5 @@
 Scriptname DW_BreathSpellScr extends activemagiceffect
 
-DW_CORE property CORE auto
-
 Actor akActor
 
 Int Sound1ID = 0
@@ -16,6 +14,7 @@ Event OnEffectStart( Actor akTarget, Actor akCaster )
 EndEvent
 
 Event OnUpdate()
+	DW_CORE CORE = Quest.GetQuest("DW_Dripping") as DW_CORE
 	;sound Breath high,low,none
 	;debug.Notification(Sound1ID+" Breath cycle start "+Sound2ID)
 	if StorageUtil.FormListHas(none, "DW.Actors", akActor)

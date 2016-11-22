@@ -1,8 +1,8 @@
 Scriptname DW_DrippingScr extends ReferenceAlias
 
-DW_CORE property CORE auto
-
 Event OnInit()
+	DW_CORE CORE = Quest.GetQuest("DW_Dripping") as DW_CORE
+
 	CORE.RegisterForModEvent("OrgasmStart", "OnSexLabOrgasm")
 	CORE.RegisterForModEvent("DeviceActorOrgasm", "OnDDOrgasm")
 	CORE.RegisterForModEvent("AnimationStart", "OnAnimationStart")
@@ -30,6 +30,7 @@ Endevent
 ;EndFunction
 
 Event OnPlayerLoadGame()
+	DW_CORE CORE = Quest.GetQuest("DW_Dripping") as DW_CORE
 	;debug.Notification("$DW_VIRGINS{" + game.getplayer().GetLeveledActorBase().GetName() + "}CLAIMED")
 	CORE.RegisterForModEvent("OrgasmStart", "OnSexLabOrgasm")
 	CORE.RegisterForModEvent("DeviceActorOrgasm", "OnDDOrgasm")
@@ -47,6 +48,7 @@ Event OnPlayerLoadGame()
 EndEvent
 
 Event OnUpdate()
+	DW_CORE CORE = Quest.GetQuest("DW_Dripping") as DW_CORE
 	Actor akActor = GetActorRef()
 	Int DW_Arousal_threshold = StorageUtil.GetIntValue(none,"DW.Arousal_threshold", 50)
 	;cast - spell using onHit to trigger effects
@@ -121,6 +123,7 @@ Event OnUpdate()
 EndEvent
 
 Event OnObjectUnequipped( Form akBaseObject, ObjectReference akReference )
+	DW_CORE CORE = Quest.GetQuest("DW_Dripping") as DW_CORE
 	Actor akActor = GetActorRef()
 	if !(CORE.DDi.IsWearingDDGag(akActor) || CORE.zbf.IsWearingZaZGag(akActor))
 		akActor.RemoveSpell(CORE.DW_DrippingGag_Spell)
