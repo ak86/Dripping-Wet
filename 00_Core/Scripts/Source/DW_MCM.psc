@@ -75,6 +75,7 @@ function Page_Settings()
 		
 			AddToggleOptionST("CumDripping_Toggle", "$DW_DRIPCUMEFF", CORE.DW_ModState02.GetValue())
 			AddToggleOptionST("SquirtDripping_Toggle", "$DW_FEMSQUIRTEFF", CORE.DW_ModState03.GetValue())
+			AddToggleOptionST("SquirtDrippingA_Toggle", "$DW_FEMSQUIRTEFFAROUSAL", StorageUtil.GetIntValue(none,"DW.SquirtChanceArousal"))
 			AddSliderOptionST("SquirtDrippingChance_Slider", "$DW_FEMSQUIRTCHANCE", StorageUtil.GetIntValue(none,"DW.SquirtChance", 50))
 			AddToggleOptionST("SquirtSLGender_Toggle", "$DW_FEMSQUIRTEFFSLGender", StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt"))
 			AddEmptyOption()
@@ -218,6 +219,10 @@ state DrippingSLGender_Toggle
 		endif
 		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp"))
 	endEvent
+	
+	event OnHighlightST()
+		SetInfoText("$DW_DRIPAROUSALEFFSLGender_DESC")
+	endEvent
 endState
 
 state Arousal_threshold_Slider
@@ -268,6 +273,21 @@ state SquirtDripping_Toggle
 	endEvent
 endState
 
+state SquirtDrippingA_Toggle
+	event OnSelectST()
+		if StorageUtil.GetIntValue(none,"DW.SquirtChanceArousal") != 1
+			StorageUtil.SetIntValue(none,"DW.SquirtChanceArousal", 1)
+		else
+			StorageUtil.SetIntValue(none,"DW.SquirtChanceArousal", 0)
+		endif
+		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.SquirtChanceArousal"))
+	endEvent
+	
+	event OnHighlightST()
+		SetInfoText("$DW_FEMSQUIRTEFFAROUSAL_DESC")
+	endEvent
+endState
+
 state SquirtSLGender_Toggle
 	event OnSelectST()
 		if StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") != 1
@@ -276,6 +296,10 @@ state SquirtSLGender_Toggle
 			StorageUtil.SetIntValue(none,"DW.UseSLGenderForSquirt", 0)
 		endif
 		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt"))
+	endEvent
+	
+	event OnHighlightST()
+		SetInfoText("$DW_FEMSQUIRTEFFSLGender_DESC")
 	endEvent
 endState
 

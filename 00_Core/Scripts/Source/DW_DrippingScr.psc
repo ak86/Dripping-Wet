@@ -15,6 +15,7 @@ Event OnInit()
 	debug.Notification("$DW_INITDONE")
 	RegisterForSingleUpdate(1)
 	;DW_JsonRebuild()
+	StorageUtil.SetIntValue(none,"DW.SquirtChanceArousal", 1)
 Endevent
 
 ;rebuild json
@@ -77,7 +78,8 @@ Event OnUpdate()
 
 		;dripping wet pc
 		if CORE.SLA.GetActorArousal(akActor) >= DW_Arousal_threshold
-			if (CORE.SexLab.GetGender( akActor ) == 0 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") == 1) || StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") == 1
+			if StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") != 1\
+			|| (CORE.SexLab.GetGender( akActor ) == 1  && akActor.GetLeveledActorBase().GetSex() == 1 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") == 1)
 				akActor.AddSpell( CORE.DW_Dripping_Spell, false )
 			endif
 		endif
@@ -99,7 +101,8 @@ Event OnUpdate()
 			if aNPC != none
 				;dripping wet npc
 				If CORE.SLA.GetActorArousal(aNPC) >= DW_Arousal_threshold
-					If (CORE.SexLab.GetGender( aNPC ) == 0 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") == 1) || StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") == 1
+					If StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") != 1\
+					|| (CORE.SexLab.GetGender( aNPC ) == 1 && aNPC.GetLeveledActorBase().GetSex() == 1 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") == 1)
 						CORE.DW_Dripping_Spell.cast( aNPC )
 					EndIf
 				EndIf

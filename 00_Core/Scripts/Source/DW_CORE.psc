@@ -69,12 +69,20 @@ EndEvent
 Event OnSexLabOrgasm(String _eventName, String _args, Float _argc, Form _sender)
 	Actor[] actors = SexLab.HookActors(_args)
 	int idx = 0
+	Int Chance = 50
 	sslBaseAnimation animation = SexLab.HookAnimation(_args)
 	
 	if DW_ModState03.GetValue() == 1
 		While idx < actors.Length
-			if Utility.RandomInt(0, 100) <= StorageUtil.GetIntValue(none,"DW.SquirtChance", 50)
-				if (SexLab.GetGender( actors[idx] ) == 0 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1) || StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1
+			if StorageUtil.GetIntValue(none,"DW.SquirtChanceArousal") != 1
+				Chance = StorageUtil.GetIntValue(none,"DW.SquirtChance", 50)
+			else
+				Chance = SLA.GetActorArousal(actors[idx])
+			endif
+
+			if Utility.RandomInt(0, 100) <= Chance
+				if StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") != 1\
+				|| (SexLab.GetGender( actors[idx] ) == 1  && actors[idx].GetLeveledActorBase().GetSex() == 1 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1)
 					DW_DrippingSquirt_Spell.cast( actors[idx] )
 				endif
 			endif
@@ -95,7 +103,8 @@ EndEvent
 Event OnDDOrgasm(string eventName, string argString, float argNum, form sender)
 	Actor akActor = Game.GetPlayer()
 	if DW_ModState03.GetValue() == 1 && akActor.GetLeveledActorBase().GetName() == argString
-		if (SexLab.GetGender( akActor ) == 0 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1) || StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1
+		if StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") != 1\
+		|| (SexLab.GetGender( akActor ) == 1 && akActor.GetLeveledActorBase().GetSex() == 1 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1)
 			DW_DrippingSquirt_Spell.cast( akActor )
 		endif
 	endif
@@ -106,10 +115,13 @@ Event OnSexLabStageChange(String _eventName, String _args, Float _argc, Form _se
 	int idx = 0
 	sslBaseAnimation animation = SexLab.HookAnimation(_args)
 	
+	;SexLabUtil.PrintConsole("vaginal?" + animation.HasTag("Vaginal"))
+	;SexLabUtil.PrintConsole("has sos?" + SOS.GetSOS(actors[1]))
+	;SexLabUtil.PrintConsole("name + gender" + actors[0].GetLeveledActorBase().GetName() + actors[0].GetLeveledActorBase().GetSex() + " , " + actors[1].GetLeveledActorBase().GetName() + actors[1].GetLeveledActorBase().GetSex())
 	if DW_ModState13.GetValue() == 1
 		if animation.HasTag("Vaginal") && actors.Length > 1
 			;check if dom actor(1) has penetrator and sub actor(0) has something to penetrate
-			If (SOS.GetSOS(actors[1]) == true || actors[1].GetLeveledActorBase().GetSex() != 1) && actors[0].GetLeveledActorBase().GetSex() == 1
+			If ((SOS.GetSOS(actors[1]) == true || SexLab.Config.UseStrapons == true) || actors[1].GetLeveledActorBase().GetSex() != 1) && actors[0].GetLeveledActorBase().GetSex() == 1
 				If DW_VirginsList.Find(actors[0]) == -1
 					;add non virgin npc to a list
 					;check if actor sl virgin
@@ -137,15 +149,15 @@ Event OnSexLabStageChange(String _eventName, String _args, Float _argc, Form _se
 						DW_VirginsClaimedTG.AddForm(actors[0])
 						If DW_ModState15.GetValue() == 1
 							If DW_VirginsClaimedTG.GetSize() == 1
-								debug.Messagebox("$DW_FIRSTBLOOD")
+								debug.Notification("$DW_FIRSTBLOOD")
 							elseif DW_VirginsClaimedTG.GetSize() == 5
-								debug.Messagebox("$DW_POWERPLAY")
+								debug.Notification("$DW_POWERPLAY")
 							elseif DW_VirginsClaimedTG.GetSize() == 10
-								debug.Messagebox("$DW_BRUTALITY")
+								debug.Notification("$DW_BRUTALITY")
 							elseif DW_VirginsClaimedTG.GetSize() == 15
-								debug.Messagebox("$DW_DOMINATION")
+								debug.Notification("$DW_DOMINATION")
 							elseif DW_VirginsClaimedTG.GetSize() == 25
-								debug.Messagebox("$DW_ANNIHILATION")
+								debug.Notification("$DW_ANNIHILATION")
 							EndIf
 						EndIf
 					EndIf
