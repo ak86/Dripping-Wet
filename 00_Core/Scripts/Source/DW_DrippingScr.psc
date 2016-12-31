@@ -58,22 +58,18 @@ Event OnUpdate()
 	;if StorageUtil.GetIntValue(none,"DW.bUseSpells") != 1
 		if CORE.SLA.GetActorArousal(akActor) > StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33)
 			;visuals
-			if !(StorageUtil.GetIntValue(none,"DW.bAnimating", 1) && CORE.DW_ModState09.GetValue() == 1)
-				if (CORE.DW_ModState05.GetValue() == 1 || CORE.DW_ModState07.GetValue() == 1) && !akActor.HasSpell( CORE.DW_Visuals_Spell )
+				if !akActor.HasSpell( CORE.DW_Visuals_Spell )
 					akActor.AddSpell( CORE.DW_Visuals_Spell, false )
 				endif
-			endif
 			;sound
-			if !(StorageUtil.GetIntValue(none,"DW.bAnimating", 1) && CORE.DW_ModState10.GetValue() == 1) 
 				;hearth beat
-				if CORE.DW_ModState06.GetValue() == 1 && !akActor.HasSpell( CORE.DW_Heart_Spell )
+				if !akActor.HasSpell( CORE.DW_Heart_Spell )
 					akActor.AddSpell( CORE.DW_Heart_Spell, false )
 				endif
 				;breath
-				if CORE.DW_ModState08.GetValue() == 1 && !akActor.HasSpell( CORE.DW_Breath_Spell )
+				if !akActor.HasSpell( CORE.DW_Breath_Spell )
 					akActor.AddSpell( CORE.DW_Breath_Spell, false )
 				endif
-			endif
 		endif
 
 		;dripping wet pc

@@ -1,7 +1,6 @@
 Scriptname DW_VisualsSpellScr extends activemagiceffect
 
 Actor akActor
-
 float strVisual
 
 Event OnEffectStart( Actor akTarget, Actor akCaster )
@@ -14,14 +13,18 @@ Event OnUpdate()
 	if StorageUtil.FormListHas(none, "DW.Actors", akActor)
 		StorageUtil.FormListAdd(none, "DW.Actors", akActor, false)
 	endIf
-	if !(StorageUtil.GetIntValue(none,"DW.bAnimating", 1) && CORE.DW_ModState09.GetValue() == 1)
-		if (CORE.DW_ModState05.GetValue() == 1 || CORE.DW_ModState07.GetValue() == 1)
-			if CORE.DDi.IsWearingDDBlindfold(akActor) == false
+	;play loop if:
+	;either visuals enabled
+	;not Blindfolded
+	;in sl action, 1p, not disabled by mcm
+	if (CORE.DW_ModState05.GetValue() == 1 || CORE.DW_ModState07.GetValue() == 1)
+		if CORE.DDi.IsWearingDDBlindfold(akActor) == false 
+			if (StorageUtil.GetIntValue(none,"DW.bAnimating", 0) == 1 && CORE.DW_ModState09.GetValue() != 1) || StorageUtil.GetIntValue(none,"DW.bAnimating", 0) == 0
 				float rank = CORE.SLA.GetActorArousal(akActor)
 				strVisual = rank / 100						;effect strength
 
 				;visual high
-				if CORE.DW_ModState05.GetValue() == 1 && rank >= StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66)
+				if CORE.DW_ModState05.GetValue() == 1 && rank >= StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66) && Game.GetCameraState() == 0
 					CORE.HighArousalVisual.PopTo(CORE.HighArousalVisual,strVisual)
 				else
 					CORE.HighArousalVisual.Remove()

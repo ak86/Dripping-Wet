@@ -31,6 +31,7 @@ FormList Property DW_VirginsClaimedTG Auto
 
 SPELL Property DW_Dripping_Spell Auto
 SPELL Property DW_DrippingCum_Spell Auto
+SPELL Property DW_DrippingSOSCum_Spell Auto
 SPELL Property DW_DrippingBlood_Spell Auto
 SPELL Property DW_DrippingSquirt_Spell Auto
 SPELL Property DW_DrippingGag_Spell Auto
@@ -98,6 +99,15 @@ Event OnSexLabOrgasm(String _eventName, String _args, Float _argc, Form _sender)
 			EndIf
 		endif
 	endif
+
+	;disabled since idk how to align effect with penis
+	;idx = 0
+	;While idx < actors.Length
+	;	if SOS.GetSOS(actors[idx]) == true
+	;		DW_DrippingSOSCum_Spell.cast( actors[idx] )
+	;	endif
+	;	idx += 1
+	;EndWhile
 EndEvent
 
 Event OnDDOrgasm(string eventName, string argString, float argNum, form sender)

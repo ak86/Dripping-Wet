@@ -144,12 +144,12 @@ function Page_Virginity()
 			AddTextOption("$DW_TOTAL", CORE.DW_VirginsClaimed.GetSize(), OPTION_FLAG_DISABLED)
 			AddTextOption("$DW_SINCEGAMESTART", CORE.DW_VirginsClaimedTG.GetSize(), OPTION_FLAG_DISABLED)
 			Page_Virginity_VC_OID = AddToggleOption("$DW_RESET", ResetVC)
-			int i = 0
-			while i <= CORE.DW_VirginsClaimed.GetSize()
+			int i = CORE.DW_VirginsClaimed.GetSize()
+			while i > 0
+				i -= 1
 				if CORE.DW_VirginsClaimed.GetAt(i) != None
 					AddTextOption((CORE.DW_VirginsClaimed.GetAt(i) as Actor).GetLeveledActorBase().GetName(), OPTION_FLAG_DISABLED)
 				endif
-				i += 1
 			endwhile
 
 	SetCursorPosition(1)
@@ -157,12 +157,12 @@ function Page_Virginity()
 			AddTextOption("$DW_TOTAL", CORE.DW_VirginsList.GetSize(), OPTION_FLAG_DISABLED)
 			Page_Virginity_VL_OID = AddToggleOption("$DW_RESET", ResetVL)
 			
-			i = 0
-			while i <= CORE.DW_VirginsList.GetSize()
+			i = CORE.DW_VirginsList.GetSize()
+			while i > 0
+				i -= 1
 				if CORE.DW_VirginsList.GetAt(i) != None
 					AddTextOption((CORE.DW_VirginsList.GetAt(i) as Actor).GetLeveledActorBase().GetName(), OPTION_FLAG_DISABLED)
 				endif
-				i += 1
 			endwhile
 endfunction
 
