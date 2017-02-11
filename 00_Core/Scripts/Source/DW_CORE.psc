@@ -67,6 +67,56 @@ Event RV(Form apForm)
 	endif
 EndEvent
 
+Event OnSexLabOrgasmS(Form ActorRef, Int Thread)
+	actor akActor = ActorRef as actor
+	string id = Thread as string
+	Actor[] actors = SexLab.HookActors(id)
+	int idx = 0
+	Int Chance = 50
+	sslBaseAnimation animation = SexLab.HookAnimation(id)
+	
+	if DW_ModState03.GetValue() == 1
+		While idx < actors.Length
+			if akActor == actors[idx]
+				if StorageUtil.GetIntValue(none,"DW.SquirtChanceArousal") != 1
+					Chance = StorageUtil.GetIntValue(none,"DW.SquirtChance", 50)
+				else
+					Chance = SLA.GetActorArousal(actors[idx])
+				endif
+
+				if Utility.RandomInt(0, 100) <= Chance
+					if StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") != 1\
+					|| (SexLab.GetGender( actors[idx] ) == 1  && actors[idx].GetLeveledActorBase().GetSex() == 1 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1)
+						DW_DrippingSquirt_Spell.cast( actors[idx] )
+					endif
+				endif
+			endif
+			idx += 1
+		EndWhile
+	endif
+	
+	if DW_ModState02.GetValue() == 1
+		if (animation.HasTag("Anal") || animation.HasTag("Vaginal")) && actors.Length > 1
+			if akActor != actors[0]
+				If SOS.GetSOS(actors[1]) == true || actors[1].GetLeveledActorBase().GetSex() != 1
+					Utility.Wait(1.0)
+					DW_DrippingCum_Spell.cast( actors[0] )
+				EndIf
+			endif
+		endif
+	endif
+
+	;disabled since idk how to align effect with penis
+	;idx = 0
+	;While idx < actors.Length
+	;	if SOS.GetSOS(actors[idx]) == true
+	;		DW_DrippingSOSCum_Spell.cast( actors[idx] )
+	;	endif
+	;	idx += 1
+	;EndWhile
+	
+EndEvent
+
 Event OnSexLabOrgasm(String _eventName, String _args, Float _argc, Form _sender)
 	Actor[] actors = SexLab.HookActors(_args)
 	int idx = 0
