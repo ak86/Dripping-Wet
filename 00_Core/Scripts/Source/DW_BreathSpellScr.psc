@@ -16,7 +16,7 @@ EndEvent
 Event OnUpdate()
 	DW_CORE CORE = Quest.GetQuest("DW_Dripping") as DW_CORE
 	;sound Breath high,low,none
-	;debug.Notification(Sound1ID+" Breath cycle start "+Sound2ID)
+	;CORE.sexlab.Log(Sound1ID+" Breath cycle start "+Sound2ID)
 	if StorageUtil.FormListHas(none, "DW.Actors", akActor)
 		StorageUtil.FormListAdd(none, "DW.Actors", akActor, false)
 	endIf
@@ -42,34 +42,34 @@ Event OnUpdate()
 
 			if  rank >= StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66)		;high arousal
 				if Sound1ID != 0
-					;debug.Notification(Sound1ID+" Breath1 stop")
+					;CORE.sexlab.Log(Sound1ID+" Breath1 stop")
 					Sound.StopInstance(Sound1ID)
 					Sound1ID = 0
 				endif
 				if Sound2ID == 0
 					Sound2ID = Sound2.play(akActor)
-					;debug.Notification(Sound2ID+" Breath2 start")
+					;CORE.sexlab.Log(Sound2ID+" Breath2 start")
 					Sound.SetInstanceVolume(Sound2ID, strSound)
 				else
-					;debug.Notification(Sound2ID+" Breath2 update")
+					;CORE.sexlab.Log(Sound2ID+" Breath2 update")
 					Sound.SetInstanceVolume(Sound2ID, strSound)
 				endif
 			elseif rank >= StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33)		;low arousal
 				if Sound2ID != 0
-					;debug.Notification(Sound2ID+" Breath2 stop")
+					;CORE.sexlab.Log(Sound2ID+" Breath2 stop")
 					Sound.StopInstance(Sound2ID)
 					Sound2ID = 0
 				endif
 				if Sound1ID == 0
-					;debug.Notification(Sound1ID+" Breath1 start")
 					Sound1ID = Sound1.play(akActor)
+					;CORE.sexlab.Log(Sound1ID+" Breath1 start")
 					Sound.SetInstanceVolume(Sound1ID, strSound)
 				else
-					;debug.Notification(Sound1ID+" Breath1 update")
+					;CORE.sexlab.Log(Sound1ID+" Breath1 update")
 					Sound.SetInstanceVolume(Sound1ID, strSound)
 				endif
 			else												;no arousal
-				;debug.Notification("Arousal too low, Breathing effect stopping " +Sound1ID + " | " + Sound2ID)
+				;CORE.sexlab.Log("Arousal too low, Breathing effect stopping " +Sound1ID + " | " + Sound2ID)
 				akActor.RemoveSpell(CORE.DW_Breath_Spell)
 				return
 			endif
@@ -80,14 +80,21 @@ Event OnUpdate()
 	akActor.RemoveSpell(CORE.DW_Breath_Spell)
 EndEvent
 
+Event OnPlayerLoadGame()
+	DW_CORE CORE = Quest.GetQuest("DW_Dripping") as DW_CORE
+	;CORE.sexlab.Log("OnPlayerLoadGame(), Breathing effect stopping ")
+	akActor.RemoveSpell(CORE.DW_Breath_Spell)
+EndEvent
+
 Event OnEffectFinish( Actor akTarget, Actor akCaster )
+	;DW_CORE CORE = Quest.GetQuest("DW_Dripping") as DW_CORE
 	if Sound1ID != 0
 		Sound.StopInstance(Sound1ID)
-		;debug.Notification("Breath1 removed")
+		;CORE.sexlab.Log("Breath1 removed")
 	endif
 	if Sound2ID != 0
 		Sound.StopInstance(Sound2ID)
-		;debug.Notification("Breath2 removed")
+		;CORE.sexlab.Log("Breath2 removed")
 	endif
 	if StorageUtil.FormListHas(none, "DW.Actors", akActor)
 		StorageUtil.FormListRemove(none, "DW.Actors", akActor)

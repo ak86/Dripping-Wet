@@ -44,6 +44,12 @@ Event OnUpdate()
 	akActor.RemoveSpell(CORE.DW_Visuals_Spell)
 EndEvent
 
+Event OnPlayerLoadGame()
+	DW_CORE CORE = Quest.GetQuest("DW_Dripping") as DW_CORE
+	;CORE.sexlab.Log("OnPlayerLoadGame(), visuals effect stopping ")
+	akActor.RemoveSpell(CORE.DW_Visuals_Spell)
+EndEvent
+
 Event OnEffectFinish( Actor akTarget, Actor akCaster )
 	DW_CORE CORE = Quest.GetQuest("DW_Dripping") as DW_CORE
 	CORE.HighArousalVisual.Remove()
