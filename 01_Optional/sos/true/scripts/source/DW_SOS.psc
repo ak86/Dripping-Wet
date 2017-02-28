@@ -17,7 +17,7 @@ bool Function GetSOS(Actor akActor)
 			Quest addon = sosScript.GetActiveAddon(akActor)
 			Faction addonFaction = SOS_Data.GetFaction(addon)
 			if addonFaction != none
-				if JsonUtil.StringListFind("/DW/SOS_NotAPenis", "NotAPenis", addonFaction.getname()) != -1
+				if JsonUtil.StringListFind("/DW/SOS_NotAPenis", "notapenis", addonFaction.getname()) == -1
 					return hasSchlong
 				else
 					return akActor.IsInFaction(SOS_SchlongifiedFaction)
