@@ -148,7 +148,9 @@ function Page_Virginity()
 			while i > 0
 				i -= 1
 				if CORE.DW_VirginsClaimed.GetAt(i) != None
-					AddTextOption((CORE.DW_VirginsClaimed.GetAt(i) as Actor).GetLeveledActorBase().GetName(), OPTION_FLAG_DISABLED)
+					if (CORE.DW_VirginsClaimed.GetAt(i) as Actor).GetLeveledActorBase().GetName() != ""
+						AddTextOption((CORE.DW_VirginsClaimed.GetAt(i) as Actor).GetLeveledActorBase().GetName(), OPTION_FLAG_DISABLED)
+					endif
 				endif
 			endwhile
 
@@ -161,7 +163,9 @@ function Page_Virginity()
 			while i > 0
 				i -= 1
 				if CORE.DW_VirginsList.GetAt(i) != None
-					AddTextOption((CORE.DW_VirginsList.GetAt(i) as Actor).GetLeveledActorBase().GetName(), OPTION_FLAG_DISABLED)
+					if (CORE.DW_VirginsClaimed.GetAt(i) as Actor).GetLeveledActorBase().GetName() != ""
+						AddTextOption((CORE.DW_VirginsList.GetAt(i) as Actor).GetLeveledActorBase().GetName(), OPTION_FLAG_DISABLED)
+					endif
 				endif
 			endwhile
 endfunction
