@@ -231,9 +231,10 @@ Event OnSexLabStageChange(String _eventName, String _args, Float _argc, Form _se
 	endif
 EndEvent
 
-Event OnAnimationStart(int threadID, bool HasPlayer)
-	Actor akActor = Game.GetPlayer()
-	if HasPlayer == true
+Event OnAnimationStart(string eventName, string strArg, float numArg, Form sender)
+	sslThreadController thread = SexLab.GetController(strArg as int)
+	if thread.HasPlayer == true
+		Actor akActor = Game.GetPlayer()
 		StorageUtil.SetIntValue(none,"DW.bAnimating", 1)
 		if DW_ModState09.GetValue() == 1	;remove visuals
 			akActor.RemoveSpell(DW_Visuals_Spell)
@@ -245,8 +246,9 @@ Event OnAnimationStart(int threadID, bool HasPlayer)
 	endif
 EndEvent
 
-Event OnAnimationEnd(int threadID, bool HasPlayer)
-	if HasPlayer == true
+Event OnAnimationEnd(string eventName, string strArg, float numArg, Form sender)
+	sslThreadController thread = SexLab.GetController(strArg as int)
+	if thread.HasPlayer == true
 		StorageUtil.SetIntValue(none,"DW.bAnimating", 0)
 	endif
 EndEvent
