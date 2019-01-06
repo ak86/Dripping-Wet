@@ -1,6 +1,6 @@
 ﻿<fomod>
   <Name>Dripping when aroused</Name>
-  <Version>06-01-2019</Version>
+  <Version>07-01-2019</Version>
   <Author>Ed86</Author>
   <Description>
   
@@ -17,7 +17,7 @@ Requires(Flower Girls):
 -SKSE
 -Flower Girls SE
 -(Optional)Aroused (Redux), required for dripping based on arousal
--(Optional)Schlongs of Skyrim(full), required for futa support
+-(Optional)Schlongs of Skyrim(full), required for futa support + PapyrusUtil
 
   
 Description:
