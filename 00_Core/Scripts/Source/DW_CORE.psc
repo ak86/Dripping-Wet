@@ -1,7 +1,7 @@
 Scriptname DW_CORE extends Quest
 
-SexLabFramework property SexLab auto
 DW_SOS property SOS auto
+DW_SL property SL auto
 DW_SLA property SLA auto
 DW_DDi property DDi auto
 DW_zbf property zbf auto
@@ -24,6 +24,26 @@ GlobalVariable Property DW_ModState13 Auto		; Virginity loss effect
 GlobalVariable Property DW_ModState14 Auto		; Virginity loss texture effect
 GlobalVariable Property DW_ModState15 Auto		; Virginity game messages
 GlobalVariable Property DW_Cloak_Range Auto
+
+GlobalVariable Property DW_Timer Auto
+GlobalVariable Property DW_bCloak Auto
+GlobalVariable Property DW_PluginsCheck Auto
+GlobalVariable Property DW_SOS_Check Auto
+GlobalVariable Property DW_bAnimating Auto
+GlobalVariable Property DW_SpellsUpdateTimer Auto
+GlobalVariable Property DW_effects_heavy Auto
+GlobalVariable Property DW_effects_light Auto
+GlobalVariable Property DW_SquirtChance Auto
+GlobalVariable Property DW_bSquirtChanceArousal Auto
+GlobalVariable Property DW_Arousal_threshold Auto
+
+GlobalVariable Property DW_bUseSLGenderForSquirt Auto
+GlobalVariable Property DW_bSLStatsIgnore Auto
+
+GlobalVariable Property DW_bUseSLGenderForDripp Auto
+
+GlobalVariable Property DW_bPlayerIsVirgin Auto
+GlobalVariable Property DW_PlayerVirginityLoss Auto
 
 FormList Property DW_VirginsList Auto
 FormList Property DW_VirginsClaimed Auto
@@ -49,9 +69,102 @@ Sound Property Heartbeat2 Auto				;High
 ImageSpaceModifier Property HighArousalVisual Auto
 ImageSpaceModifier Property LowArousalVisual Auto
 
-;StorageUtil.SetIntValue(none,"DW.bAnimating", 1) ;SL player animation detection for stopping sound/visual effects
-;StorageUtil.SetIntValue(none,"DW.UseSLGenderForSquirt", 1)
-;StorageUtil.SetIntValue(none,"DW.UseSLGenderForDripp", 1)
+Bool Property Plugin_SLAR = false auto
+Bool Property Plugin_AR = false auto
+Bool Property Plugin_SL = false auto
+Bool Property Plugin_FGSE = false auto
+
+Function Startup()
+	Plugin_SL = (Game.GetModbyName("SexLab.esm") != 255)
+	Plugin_SLAR = (Game.GetModbyName("SexLabAroused.esm") != 255)
+
+	Plugin_FGSE = (Game.GetModbyName("FlowerGirls SE.esm") != 255)
+	Plugin_AR = (Game.GetModbyName("ArousedRedux.esm") != 255)
+
+	SL.RegisterForModEvent("OrgasmStart", "OnSexLabOrgasm")
+	SL.RegisterForModEvent("SexLabOrgasmSeparate", "OnSexLabOrgasmSeparate")
+	SL.RegisterForModEvent("DeviceActorOrgasm", "OnDDOrgasm")
+	SL.RegisterForModEvent("AnimationStart", "OnAnimationStart")
+	SL.RegisterForModEvent("AnimationEnd", "OnAnimationEnd")
+	SL.RegisterForModEvent("StageStart", "OnSexLabStageChange")
+	RegisterForModEvent("RestoreVirginity", "RV")
+	
+	Utility.wait(1)
+	DW_PluginsCheck.SetValue(1)
+	MCM.Maintenance()
+	DW_VirginsClaimedTG.Revert()
+	RegisterForSingleUpdate(1)
+	;debug.Notification("DW startup" + DW_PluginsCheck.GetValue())
+EndFunction
+
+Event OnUpdate()
+	Actor akActor = Game.GetPlayer()
+	;cast - spell using onHit to trigger effects
+	;addspell - abilities that run constantly
+
+	if SLA.GetActorArousal(akActor) > DW_effects_light.GetValue()
+		;visuals
+			if !akActor.HasSpell( DW_Visuals_Spell )
+				akActor.AddSpell( DW_Visuals_Spell, false )
+			endif
+		;sound
+			;hearth beat
+			if !akActor.HasSpell( DW_Heart_Spell )
+				akActor.AddSpell( DW_Heart_Spell, false )
+			endif
+			;breath
+			if !akActor.HasSpell( DW_Breath_Spell )
+				akActor.AddSpell( DW_Breath_Spell, false )
+			endif
+	endif
+
+	;dripping wet pc
+	if SLA.GetActorArousal(akActor) >= DW_Arousal_threshold.GetValue()
+		if DW_bUseSLGenderForDripp.GetValue() != 1\
+		|| (SL.GetGender( akActor ) == 1  && akActor.GetLeveledActorBase().GetSex() == 1 && DW_bUseSLGenderForDripp.GetValue() == 1)
+			akActor.AddSpell( DW_Dripping_Spell, false )
+		endif
+	endif
+	
+	;dripping gag pc
+	if DDi.IsWearingDDGag(akActor) || zbf.IsWearingZaZGag(akActor)
+		DW_DrippingGag_Spell.cast( akActor )
+	endif
+	
+	;npc cloak
+	if DW_bCloak.GetValue() == 1
+		Cell akTargetCell = akActor.GetParentCell()
+		int iRef = 0
+		
+		while iRef <= akTargetCell.getNumRefs(43) ;GetType() 62-char,44-lvchar,43-npc
+			Actor aNPC = akTargetCell.getNthRef(iRef, 43) as Actor
+			
+			if aNPC != none
+				;dripping wet npc
+				If SLA.GetActorArousal(aNPC) >= DW_Arousal_threshold.GetValue()
+					If DW_bUseSLGenderForDripp.GetValue() != 1\
+					|| (SL.GetGender( aNPC ) == 1 && aNPC.GetLeveledActorBase().GetSex() == 1 && DW_bUseSLGenderForDripp.GetValue() == 1)
+						DW_Dripping_Spell.cast( aNPC )
+					EndIf
+				EndIf
+				
+				;dripping gag npc
+				if DDi.IsWearingDDGag(aNPC) || zbf.IsWearingZaZGag(aNPC)
+					DW_DrippingGag_Spell.cast( aNPC )
+				endif
+				
+				;breath npc
+				if DW_ModState00.GetValue() == 1 && !aNPC.HasSpell( DW_Breath_Spell ) && aNPC != akActor
+					aNPC.AddSpell( DW_Breath_Spell, false )
+				endif
+			endif
+			
+			iRef = iRef + 1
+		endWhile
+	endif
+
+	RegisterForSingleUpdate(DW_Timer.GetValue())
+EndEvent
 
 Event RV(Form apForm)
 	Actor akActor = apForm as Actor
@@ -61,194 +174,8 @@ Event RV(Form apForm)
 			debug.Trace(akActor.GetLeveledActorBase().GetName() +" virginity restored")
 		endif
 		if akActor == Game.GetPlayer()
-			StorageUtil.SetIntValue(none,"DW.bPlayerIsVirgin", 1)
+			DW_bPlayerIsVirgin.SetValue(1)
 			debug.Trace("PC virginity restored")
 		endif
-	endif
-EndEvent
-
-Event OnSexLabOrgasmS(Form ActorRef, Int Thread)
-	actor akActor = ActorRef as actor
-	string id = Thread as string
-	Actor[] actors = SexLab.HookActors(id)
-	int idx = 0
-	Int Chance = 50
-	sslBaseAnimation animation = SexLab.HookAnimation(id)
-	
-	if DW_ModState03.GetValue() == 1
-		While idx < actors.Length
-			if akActor == actors[idx]
-				if StorageUtil.GetIntValue(none,"DW.SquirtChanceArousal") != 1
-					Chance = StorageUtil.GetIntValue(none,"DW.SquirtChance", 50)
-				else
-					Chance = SLA.GetActorArousal(actors[idx])
-				endif
-
-				if Utility.RandomInt(0, 100) <= Chance
-					if StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") != 1\
-					|| (SexLab.GetGender( actors[idx] ) == 1  && actors[idx].GetLeveledActorBase().GetSex() == 1 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1)
-						DW_DrippingSquirt_Spell.cast( actors[idx] )
-					endif
-				endif
-			endif
-			idx += 1
-		EndWhile
-	endif
-	
-	if DW_ModState02.GetValue() == 1
-		if (animation.HasTag("Anal") || animation.HasTag("Vaginal")) && actors.Length > 1
-			if akActor != actors[0]
-				If SOS.GetSOS(actors[1]) == true || actors[1].GetLeveledActorBase().GetSex() != 1
-					Utility.Wait(1.0)
-					DW_DrippingCum_Spell.cast( actors[0] )
-				EndIf
-			endif
-		endif
-	endif
-
-	;disabled since idk how to align effect with penis
-	;idx = 0
-	;While idx < actors.Length
-	;	if SOS.GetSOS(actors[idx]) == true
-	;		DW_DrippingSOSCum_Spell.cast( actors[idx] )
-	;	endif
-	;	idx += 1
-	;EndWhile
-	
-EndEvent
-
-Event OnSexLabOrgasm(String _eventName, String _args, Float _argc, Form _sender)
-	Actor[] actors = SexLab.HookActors(_args)
-	int idx = 0
-	Int Chance = 50
-	sslBaseAnimation animation = SexLab.HookAnimation(_args)
-	
-	if DW_ModState03.GetValue() == 1
-		While idx < actors.Length
-			if StorageUtil.GetIntValue(none,"DW.SquirtChanceArousal") != 1
-				Chance = StorageUtil.GetIntValue(none,"DW.SquirtChance", 50)
-			else
-				Chance = SLA.GetActorArousal(actors[idx])
-			endif
-
-			if Utility.RandomInt(0, 100) <= Chance
-				if StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") != 1\
-				|| (SexLab.GetGender( actors[idx] ) == 1  && actors[idx].GetLeveledActorBase().GetSex() == 1 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1)
-					DW_DrippingSquirt_Spell.cast( actors[idx] )
-				endif
-			endif
-			idx += 1
-		EndWhile
-	endif
-	
-	if DW_ModState02.GetValue() == 1
-		if (animation.HasTag("Anal") || animation.HasTag("Vaginal")) && actors.Length > 1
-			If SOS.GetSOS(actors[1]) == true || actors[1].GetLeveledActorBase().GetSex() != 1
-				Utility.Wait(1.0)
-				DW_DrippingCum_Spell.cast( actors[0] )
-			EndIf
-		endif
-	endif
-
-	;disabled since idk how to align effect with penis
-	;idx = 0
-	;While idx < actors.Length
-	;	if SOS.GetSOS(actors[idx]) == true
-	;		DW_DrippingSOSCum_Spell.cast( actors[idx] )
-	;	endif
-	;	idx += 1
-	;EndWhile
-EndEvent
-
-Event OnDDOrgasm(string eventName, string argString, float argNum, form sender)
-	Actor akActor = Game.GetPlayer()
-	if DW_ModState03.GetValue() == 1 && akActor.GetLeveledActorBase().GetName() == argString
-		if StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") != 1\
-		|| (SexLab.GetGender( akActor ) == 1 && akActor.GetLeveledActorBase().GetSex() == 1 && StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") == 1)
-			DW_DrippingSquirt_Spell.cast( akActor )
-		endif
-	endif
-EndEvent
-
-Event OnSexLabStageChange(String _eventName, String _args, Float _argc, Form _sender)
-	Actor[] actors = SexLab.HookActors(_args)
-	int idx = 0
-	sslBaseAnimation animation = SexLab.HookAnimation(_args)
-	
-	;SexLabUtil.PrintConsole("vaginal?" + animation.HasTag("Vaginal"))
-	;SexLabUtil.PrintConsole("has sos?" + SOS.GetSOS(actors[1]))
-	;SexLabUtil.PrintConsole("name + gender" + actors[0].GetLeveledActorBase().GetName() + actors[0].GetLeveledActorBase().GetSex() + " , " + actors[1].GetLeveledActorBase().GetName() + actors[1].GetLeveledActorBase().GetSex())
-	if DW_ModState13.GetValue() == 1
-		if animation.HasTag("Vaginal") && actors.Length > 1
-			;check if dom actor(1) has penetrator and sub actor(0) has something to penetrate
-			If ((SOS.GetSOS(actors[1]) == true || SexLab.Config.UseStrapons == true) || actors[1].GetLeveledActorBase().GetSex() != 1) && actors[0].GetLeveledActorBase().GetSex() == 1
-				If DW_VirginsList.Find(actors[0]) == -1
-					;add non virgin npc to a list
-					;check if actor sl virgin
-                    If SexLab.HadSex(actors[0]) && (SexLab.GetSkillLevel(actors[0], "Vaginal") > 0)
-						;check if we ignore sl stats
-						If StorageUtil.GetIntValue(none,"DW.bSLStatsIgnore") != 1 
-							;check if actor is  not a player
-							If actors[0] != Game.GetPlayer()
-								DW_VirginsList.AddForm(actors[0])
-								return
-							EndIf
-						EndIf
-					EndIf
-					
-					;player loosing virginity
-					If actors[0] == Game.GetPlayer() && StorageUtil.GetIntValue(none,"DW.bPlayerIsVirgin", 1)
-						debug.Notification("$DW_VIRGINITYLOST")
-						StorageUtil.SetIntValue(none,"DW.bPlayerIsVirgin", 0)
-						StorageUtil.AdjustIntValue(none,"DW.PlayerVirginityLoss", 1)
-
-						;player claims npc virginity
-					elseif actors[1] == Game.GetPlayer() 
-						debug.Notification("$DW_VIRGINSCLAIMED")
-						DW_VirginsClaimed.AddForm(actors[0])
-						DW_VirginsClaimedTG.AddForm(actors[0])
-						If DW_ModState15.GetValue() == 1
-							If DW_VirginsClaimedTG.GetSize() == 1
-								debug.Notification("$DW_FIRSTBLOOD")
-							elseif DW_VirginsClaimedTG.GetSize() == 5
-								debug.Notification("$DW_POWERPLAY")
-							elseif DW_VirginsClaimedTG.GetSize() == 10
-								debug.Notification("$DW_BRUTALITY")
-							elseif DW_VirginsClaimedTG.GetSize() == 15
-								debug.Notification("$DW_DOMINATION")
-							elseif DW_VirginsClaimedTG.GetSize() == 25
-								debug.Notification("$DW_ANNIHILATION")
-							EndIf
-						EndIf
-					EndIf
-					DW_VirginsList.AddForm(actors[0])
-					DW_DrippingBlood_Spell.cast( actors[0] )
-					;DW_DrippingBloodTextures_Spell.cast( actors[0] )
-					return
-				EndIf
-			EndIf
-		endif
-	endif
-EndEvent
-
-Event OnAnimationStart(string eventName, string strArg, float numArg, Form sender)
-	sslThreadController thread = SexLab.GetController(strArg as int)
-	if thread.HasPlayer == true
-		Actor akActor = Game.GetPlayer()
-		StorageUtil.SetIntValue(none,"DW.bAnimating", 1)
-		if DW_ModState09.GetValue() == 1	;remove visuals
-			akActor.RemoveSpell(DW_Visuals_Spell)
-		endif
-		if DW_ModState10.GetValue() == 1	;remove sound
-			akActor.RemoveSpell(DW_Heart_Spell)
-			akActor.RemoveSpell(DW_Breath_Spell)
-		endif
-	endif
-EndEvent
-
-Event OnAnimationEnd(string eventName, string strArg, float numArg, Form sender)
-	sslThreadController thread = SexLab.GetController(strArg as int)
-	if thread.HasPlayer == true
-		StorageUtil.SetIntValue(none,"DW.bAnimating", 0)
 	endif
 EndEvent

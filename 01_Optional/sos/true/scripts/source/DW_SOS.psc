@@ -1,17 +1,16 @@
 Scriptname DW_SOS extends Quest
 
 Event OnInit()
-	StorageUtil.SetIntValue(none,"DW.PluginsCheck.sos",2)
+	DW_CORE CORE = Game.GetFormFromFile(0xD62, "DW.esp") as DW_CORE
+	CORE.DW_SOS_Check.SetValue(2)
 EndEvent
-
-bool Function IsIntegraged ()
-	Return True
-EndFunction
 
 bool Function GetSOS(Actor akActor)
 	bool hasSchlong = false
-	SOS_SetupQuest_Script sosScript = Quest.GetQuest("SOS_SetupQuest") as SOS_SetupQuest_Script
-	Faction SOS_SchlongifiedFaction = sosScript.SOS_SchlongifiedFaction
+	Quest sosScriptQuest = Quest.GetQuest("SOS_SetupQuest")
+	if (sosScriptQuest)
+		SOS_SetupQuest_Script sosScript = sosScriptQuest as SOS_SetupQuest_Script
+		Faction SOS_SchlongifiedFaction = sosScript.SOS_SchlongifiedFaction
 
 		If akActor.IsInFaction(SOS_SchlongifiedFaction)
 			Quest addon = sosScript.GetActiveAddon(akActor)
@@ -24,5 +23,6 @@ bool Function GetSOS(Actor akActor)
 				endif
 			endif
 		endif
+	endif
 	return hasSchlong
 EndFunction

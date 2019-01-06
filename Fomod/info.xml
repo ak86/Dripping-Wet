@@ -1,14 +1,23 @@
 ﻿<fomod>
   <Name>Dripping when aroused</Name>
-  <Version>22-07-2017</Version>
+  <Version>06-01-2019</Version>
   <Author>Ed86</Author>
   <Description>
   
-Requires:
+Requires(Sexlab):
+-SKSE
 -SexLab Framework
--(Optional)SexLab Aroused (Redux), required for dripping
--(Optional)Schlongs of Skyrim, required for futa support
+-(Optional)SexLab Aroused (Redux), required for dripping based on arousal
+-(Optional)Schlongs of Skyrim(full), required for futa support
 -(Optional)DDi/Zap, required for gag drooling support
+
+OR
+
+Requires(Flower Girls):
+-SKSE
+-Flower Girls SE
+-(Optional)Aroused (Redux), required for dripping based on arousal
+-(Optional)Schlongs of Skyrim(full), required for futa support
 
   
 Description:
@@ -18,13 +27,13 @@ Having vaginal intercourse will cause character to loose virginity and bleed.(60
 After having orgasm females will squirt.(10s)
 Wearing Gag will cause drooling effect.(10s)
 When PC is aroused enough, you will hear heartbeat, breathing(incl. NPCs) and have a blurred vision.
-All effects can be had at same time, effects work through clothes, affected npcs shown in mcm.
+All effects can be had at same time, effects work through clothes.
  
 Your graphic settings, enb, etc can affect visibility of effects.
  
 Mod runs checks on player character and actors within range every X seconds, If character aroused enough Mod applies hidden spell with 60 seconds duration.
 
-Cheat?: you can set Arousal_threshold to 0 and all females will be dripping(even if you have no SLA)
+Cheat?: you can set Arousal_threshold to 0 and all females will be dripping
   </Description>
-  <Website>http://www.loverslab.com/files/file/2300-dripping-when-aroused/</Website>
+  <Website>https://www.patreon.com/Ed86</Website>
 </fomod>

@@ -7,7 +7,7 @@
 					<plugins order="Explicit">
 						<plugin name="CORE">
 							<description>
-								Esp, Meshes, Textures, Sounds, core scripts.
+								Meshes, Textures, Sounds, core scripts.
 							</description>
 							<image path="Fomod\Screens\ejaculation_1024.jpg"/>
 							<conditionFlags>
@@ -37,7 +37,7 @@
 						</plugin>
 						<plugin name="Schlongs of Skyrim(FULL)">
 							<description>
-								Requires Schlongs of Skyrim(FULL)
+								Requires Schlongs of Skyrim(FULL) + PapyrusUtil
 							</description>
 							<conditionFlags>
 								<flag name="SoS">True</flag>
@@ -46,12 +46,13 @@
 								<type name="Optional"/>
 							</typeDescriptor>
 						</plugin>
-						<plugin name="SexLab Aroused">
+						
+						<plugin name="Flower Girls SE/VR">
 							<description>
-								Requires SexLab Aroused or SexLab Aroused (Redux)
+								Requires Flower Girls SE/VR
 							</description>
 							<conditionFlags>
-								<flag name="SlA">True</flag>
+								<flag name="FG">True</flag>
 							</conditionFlags>
 							<typeDescriptor>
 								<type name="Optional"/>
@@ -72,14 +73,6 @@
 					<folder source="01_Optional\SoS\True" destination=""/>
 				</files>
 			</pattern>
-			<pattern>
-				<dependencies operator="And">
-					<flagDependency flag="SlA" value="True"/>
-				</dependencies>
-				<files>
-					<folder source="01_Optional\SlA\True" destination=""/>
-				</files>
-			</pattern>
 			
 			<pattern>
 				<dependencies operator="And">
@@ -89,12 +82,22 @@
 					<folder source="01_Optional\SoS\False" destination=""/>
 				</files>
 			</pattern>
+			
 			<pattern>
 				<dependencies operator="And">
-					<flagDependency flag="SlA" value=""/>
+					<flagDependency flag="FG" value="True"/>
 				</dependencies>
 				<files>
-					<folder source="01_Optional\SlA\False" destination=""/>
+					<folder source="01_Optional\FG\True" destination=""/>
+				</files>
+			</pattern>
+			
+			<pattern>
+				<dependencies operator="And">
+					<flagDependency flag="FG" value=""/>
+				</dependencies>
+				<files>
+					<folder source="01_Optional\FG\False" destination=""/>
 				</files>
 			</pattern>
 		</patterns>

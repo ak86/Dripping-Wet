@@ -1,54 +1,40 @@
 Scriptname DW_Status extends Quest
 
+DW_CORE CORE
+
 Event OnInit()
+	CORE = Game.GetFormFromFile(0xD62, "DW.esp") as DW_CORE
 	RegisterForSingleUpdate(10)
 EndEvent
 
 Event OnUpdate()
-	if StorageUtil.GetIntValue(game.getplayer(),"DW.PluginsCheck.scripts") != 1
-		Debug.Messagebox("Dripping when aroused was not installed correctly, scripts are not running.\n This can be false alarm when starting new game but if message keeps repeating, then something is wrong, reinstall with correct plugins.")
+	if CORE.DW_PluginsCheck.GetValue() != 1
 		DWPluginsInfo()
 		RegisterForSingleUpdate(10)
 	endif
-	StorageUtil.UnSetIntValue(game.getplayer(),"DW.PluginsCheck.scripts")
+	CORE.DW_PluginsCheck.SetValue(0)
 EndEvent
 
 Function DWPluginsInfo()
 	String msg = ""
 	String Status = ""
 	int i = 0
-	String [] name = new string[4]
-	Int[] value = new int[4]
-	;bool ErrorsFound = False
+	String [] name = new string[1]
+	Int[] value = new int[1]
+	bool ErrorsFound = False
 
 	;individual check to see if scripts working at all
 	;stop quest
 	;reset quest (so that scripts run OnInit() during quest start)
-	;start quest (OnInit() sends StorageUtil values if script has launched)
-	Quest.GetQuest("DW_Dripping_SLA").stop()
-	Quest.GetQuest("DW_Dripping_SLA").reset()
-	Quest.GetQuest("DW_Dripping_SLA").start()
-	Quest.GetQuest("DW_Dripping_DDi").stop()
-	Quest.GetQuest("DW_Dripping_DDi").reset()
-	Quest.GetQuest("DW_Dripping_DDi").start()
-	Quest.GetQuest("DW_Dripping_zbf").stop()
-	Quest.GetQuest("DW_Dripping_zbf").reset()
-	Quest.GetQuest("DW_Dripping_zbf").start()
+	;start quest (OnInit() resets values if script has launched)
 	Quest.GetQuest("DW_Dripping_SOS").stop()
 	Quest.GetQuest("DW_Dripping_SOS").reset()
 	Quest.GetQuest("DW_Dripping_SOS").start()
 	utility.wait(1) ; wait for quests startup and do their OnInit()
 
-	value[0] = StorageUtil.GetIntValue(none,"DW.PluginsCheck.ddi")
-	value[1] = StorageUtil.GetIntValue(none,"DW.PluginsCheck.sla")
-	value[2] = StorageUtil.GetIntValue(none,"DW.PluginsCheck.sos")
-	value[3] = StorageUtil.GetIntValue(none,"DW.PluginsCheck.zbf")
+	value[0] = CORE.DW_SOS_Check.GetValue() as int
 
-
-	name[0] = "DW.PluginsCheck.ddi"
-	name[1] = "DW.PluginsCheck.sla"
-	name[2] = "DW.PluginsCheck.sos"
-	name[3] = "DW.PluginsCheck.zbf"
+	name[0] = "Schlongs of Skyrim (Full)"
 
 	msg = "Dripping Wet plugins check:\n"
 	While i < name.Length
@@ -58,20 +44,18 @@ Function DWPluginsInfo()
 			Status = "on"
 		else
 			Status = "error"
-			;ErrorsFound = True
+			ErrorsFound = True
 		endif
 
 		msg = msg + ("Plugin: " + name[i] + " Status: " + Status + "\n")
 		i += 1
 	endwhile
 	
-	;if ErrorsFound == True
+	if ErrorsFound == True
 		Debug.MessageBox(msg)
-	;endif
+		Debug.Messagebox("Dripping when aroused was not installed correctly, scripts are not running.\n This can be false alarm when starting new game but if message keeps repeating, then something is wrong, reinstall with correct plugins.")
+	endif
 	
-	;reset StorageUtil for next run
-	StorageUtil.UnSetIntValue(none,"DW.PluginsCheck.ddi")
-	StorageUtil.UnSetIntValue(none,"DW.PluginsCheck.sla")
-	StorageUtil.UnSetIntValue(none,"DW.PluginsCheck.sos")
-	StorageUtil.UnSetIntValue(none,"DW.PluginsCheck.zbf")
+	;reset for next run
+	CORE.DW_SOS_Check.SetValue(0)
 EndFunction

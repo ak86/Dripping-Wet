@@ -6,16 +6,17 @@ int Page_Virginity_VC_OID
 int Page_Virginity_VL_OID
 bool ResetVC = false
 bool ResetVL = false
+bool ForceStart = false
 
 Function Maintenance()
-	if StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66) < 0 || StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66) == 100
-		StorageUtil.SetIntValue(none,"DW.DW_effects_heavy", 66)
+	if CORE.DW_effects_heavy.GetValue() < 0 || CORE.DW_effects_heavy.GetValue() == 100
+		CORE.DW_effects_heavy.SetValue(66)
 	endif
-	if StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33) < 0 || StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33) == 100
-		StorageUtil.SetIntValue(none,"DW.DW_effects_light", 33)
+	if CORE.DW_effects_light.GetValue() < 0 || CORE.DW_effects_light.GetValue() == 100
+		CORE.DW_effects_light.SetValue(33)
 	endif
-	if StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33) >= StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66) && StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66) >= 1
-		StorageUtil.SetIntValue(none,"DW.DW_effects_light", StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66) - 1)
+	if CORE.DW_effects_light.GetValue() >= CORE.DW_effects_heavy.GetValue() && CORE.DW_effects_heavy.GetValue() >= 1
+		CORE.DW_effects_light.SetValue(CORE.DW_effects_heavy.GetValue() - 1)
 	endif
 	
 	Actor PlayerRef = Game.GetPlayer()
@@ -28,6 +29,7 @@ Function Maintenance()
 	if CORE.DW_ModState08.GetValue() == 0 && PlayerRef.HasSpell( CORE.DW_Breath_Spell )		;remove sound
 		PlayerRef.RemoveSpell(CORE.DW_Breath_Spell)
 	endif
+	ForceStart = false
 EndFunction
 
 event OnConfigInit()
@@ -59,25 +61,25 @@ endEvent
 function Page_Settings()
 	SetCursorFillMode(TOP_TO_BOTTOM)
 		AddHeaderOption("$DW_CONFIG")
-			AddSliderOptionST("DW_Timer_Slider", "$DW_SCRIPTPOLLRATE", StorageUtil.GetIntValue(none,"DW.DW_Timer", 10), "$DW_SECONDS")
-			AddSliderOptionST("DW_SpellsUpdateTimer_Slider", "$DW_EFFECTPOLLRATE", StorageUtil.GetIntValue(none,"DW.DW_SpellsUpdateTimer", 1), "$DW_SECONDS")
+			AddSliderOptionST("DW_Timer_Slider", "$DW_SCRIPTPOLLRATE", CORE.DW_Timer.GetValue(), "$DW_SECONDS")
+			AddSliderOptionST("DW_SpellsUpdateTimer_Slider", "$DW_EFFECTPOLLRATE", CORE.DW_SpellsUpdateTimer.GetValue(), "$DW_SECONDS")
 			AddEmptyOption()
 
 			AddToggleOptionST("PreDripping_Toggle", "$DW_DRIPAROUSALEFF", CORE.DW_ModState01.GetValue())
-			AddSliderOptionST("Arousal_threshold_Slider", "$DW_DRIPAROUSALTHRES", StorageUtil.GetIntValue(none,"DW.Arousal_threshold", 50))
-			AddToggleOptionST("DrippingSLGender_Toggle", "$DW_DRIPAROUSALEFFSLGender", StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp"))
+			AddSliderOptionST("Arousal_threshold_Slider", "$DW_DRIPAROUSALTHRES", CORE.DW_Arousal_threshold.GetValue())
+			AddToggleOptionST("DrippingSLGender_Toggle", "$DW_DRIPAROUSALEFFSLGender", CORE.DW_bUseSLGenderForDripp.GetValue())
 			AddEmptyOption()
 
-			AddToggleOptionST("Cloak_Toggle", "$DW_NPCDRIPCLOAK", StorageUtil.GetIntValue(none,"DW.DW_Cloak", 1))
+			AddToggleOptionST("Cloak_Toggle", "$DW_NPCDRIPCLOAK", CORE.DW_bCloak.GetValue())
 			AddSliderOptionST("Cloak_Range_Slider", "$DW_CLOAKRANGE", CORE.DW_Cloak_Range.GetValue() as int)
 			AddEmptyOption()
 			
 		
 			AddToggleOptionST("CumDripping_Toggle", "$DW_DRIPCUMEFF", CORE.DW_ModState02.GetValue())
 			AddToggleOptionST("SquirtDripping_Toggle", "$DW_FEMSQUIRTEFF", CORE.DW_ModState03.GetValue())
-			AddToggleOptionST("SquirtDrippingA_Toggle", "$DW_FEMSQUIRTEFFAROUSAL", StorageUtil.GetIntValue(none,"DW.SquirtChanceArousal"))
-			AddSliderOptionST("SquirtDrippingChance_Slider", "$DW_FEMSQUIRTCHANCE", StorageUtil.GetIntValue(none,"DW.SquirtChance", 50))
-			AddToggleOptionST("SquirtSLGender_Toggle", "$DW_FEMSQUIRTEFFSLGender", StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt"))
+			AddToggleOptionST("SquirtDrippingA_Toggle", "$DW_FEMSQUIRTEFFAROUSAL", CORE.DW_bSquirtChanceArousal.GetValue())
+			AddSliderOptionST("SquirtDrippingChance_Slider", "$DW_FEMSQUIRTCHANCE", CORE.DW_SquirtChance.GetValue())
+			AddToggleOptionST("SquirtSLGender_Toggle", "$DW_FEMSQUIRTEFFSLGender", CORE.DW_bUseSLGenderForSquirt.GetValue())
 			AddEmptyOption()
 
 			AddToggleOptionST("GagDrooling_Toggle", "$DW_GAGDROOLEFF", CORE.DW_ModState04.GetValue())
@@ -86,14 +88,14 @@ function Page_Settings()
 			AddToggleOptionST("VLE_Toggle", "$DW_VIRGINLOSSEFF", CORE.DW_ModState13.GetValue())
 			;AddToggleOptionST("VLT_Toggle", "$DW_VIRGINLOSSTEX", CORE.DW_ModState14.GetValue())
 			AddToggleOptionST("VLM_Toggle", "$DW_VIRGINMSG", CORE.DW_ModState15.GetValue())
-			AddToggleOptionST("VLISLS_Toggle", "$DW_IGNORESLSTAT", StorageUtil.GetIntValue(none,"DW.bSLStatsIgnore"))
+			AddToggleOptionST("VLISLS_Toggle", "$DW_IGNORESLSTAT", CORE.DW_bSLStatsIgnore.GetValue())
 			AddEmptyOption()
 
 			;AddToggleOptionST("DW_effects_Toggler", "DW_USOP", StorageUtil.GetIntValue(none,"DW.bUseSpells"))
 			AddEmptyOption()
 
-			AddSliderOptionST("DW_effects_light_Slider", "$DW_LIGHTAROUSALEFFTHRES", StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33))
-			AddSliderOptionST("DW_effects_heavy_Slider", "$DW_HEAVYAROUSALEFFTHRES", StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66))
+			AddSliderOptionST("DW_effects_light_Slider", "$DW_LIGHTAROUSALEFFTHRES", CORE.DW_effects_light.GetValue())
+			AddSliderOptionST("DW_effects_heavy_Slider", "$DW_HEAVYAROUSALEFFTHRES", CORE.DW_effects_heavy.GetValue())
 			AddEmptyOption()
 
 			AddToggleOptionST("Visual_Toggle", "$DW_HEAVYVISEFF", CORE.DW_ModState05.GetValue())
@@ -110,6 +112,8 @@ function Page_Settings()
 			AddEmptyOption()
 
 	SetCursorPosition(1)
+		AddToggleOptionST("Force_Start_Toggle", "$DW_Force_Start", ForceStart)
+		AddEmptyOption()
 		AddHeaderOption("$DW_PSE")
 		Actor PlayerRef = Game.GetPlayer()
 			if PlayerRef.HasMagicEffect(Game.GetFormFromFile(0x9eef , "DW.esp") as magiceffect)
@@ -122,22 +126,22 @@ function Page_Settings()
 					AddTextOption("$DW_PHHE", OPTION_FLAG_DISABLED)
 			endIf
 			AddEmptyOption()
-		AddHeaderOption("$DW_AFFECTEDACTORS")
-			int i = StorageUtil.FormListCount(none, "DW.Actors")
-				while(i > 0)
-					i -= 1
-					Actor Actors = StorageUtil.FormListGet(none, "DW.Actors", i) as Actor
-					if Actors != None
-						AddTextOption(Actors.GetLeveledActorBase().GetName(), OPTION_FLAG_DISABLED)
-					endif
-				endwhile
+		;AddHeaderOption("$DW_AFFECTEDACTORS")
+		;	int i = StorageUtil.FormListCount(none, "DW.Actors")
+		;		while(i > 0)
+		;			i -= 1
+		;			Actor Actors = StorageUtil.FormListGet(none, "DW.Actors", i) as Actor
+		;			if Actors != None
+		;				AddTextOption(Actors.GetLeveledActorBase().GetName(), OPTION_FLAG_DISABLED)
+		;			endif
+		;		endwhile
 endfunction
 
 function Page_Virginity()
 	SetCursorFillMode(TOP_TO_BOTTOM)
-		if StorageUtil.GetIntValue(none,"DW.PlayerVirginityLoss", 0) > 0
+		if CORE.DW_PlayerVirginityLoss.GetValue() > 0
 			AddHeaderOption("$DW_PCVIRGINLOST")
-				AddTextOption("$DW_TOTAL", StorageUtil.GetIntValue(none,"DW.PlayerVirginityLoss", 0), OPTION_FLAG_DISABLED)
+				AddTextOption("$DW_TOTAL", CORE.DW_PlayerVirginityLoss.GetValue(), OPTION_FLAG_DISABLED)
 		endif
 		
 		AddHeaderOption("$DW_PCVIRGINSCLAIMED")
@@ -172,12 +176,12 @@ endfunction
 
 state Cloak_Toggle
 	event OnSelectST()
-		if StorageUtil.GetIntValue(none,"DW.DW_Cloak", 1) != 1
-			StorageUtil.SetIntValue(none,"DW.DW_Cloak", 1)
+		if CORE.DW_bCloak.GetValue() != 1
+			CORE.DW_bCloak.SetValue(1)
 		else
-			StorageUtil.SetIntValue(none,"DW.DW_Cloak", 0)
+			CORE.DW_bCloak.SetValue(0)
 		endif
-		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.DW_Cloak", 1))
+		SetToggleOptionValueST(CORE.DW_bCloak.GetValue())
 	endEvent
 	
 	event OnHighlightST()
@@ -216,12 +220,12 @@ endState
 
 state DrippingSLGender_Toggle
 	event OnSelectST()
-		if StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp") != 1
-			StorageUtil.SetIntValue(none,"DW.UseSLGenderForDripp", 1)
+		if CORE.DW_bUseSLGenderForDripp.GetValue() != 1
+			CORE.DW_bUseSLGenderForDripp.SetValue(1)
 		else
-			StorageUtil.SetIntValue(none,"DW.UseSLGenderForDripp", 0)
+			CORE.DW_bUseSLGenderForDripp.SetValue(0)
 		endif
-		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.UseSLGenderForDripp"))
+		SetToggleOptionValueST(CORE.DW_bUseSLGenderForDripp.GetValue())
 	endEvent
 	
 	event OnHighlightST()
@@ -231,15 +235,15 @@ endState
 
 state Arousal_threshold_Slider
 	event OnSliderOpenST()
-		SetSliderDialogStartValue(StorageUtil.GetIntValue(none,"DW.Arousal_threshold", 50))
+		SetSliderDialogStartValue(CORE.DW_Arousal_threshold.GetValue())
 		SetSliderDialogDefaultValue(50)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(1)
 	endEvent
 
 	event OnSliderAcceptST(float value)
-		StorageUtil.SetIntValue(none,"DW.Arousal_threshold", value as int)
-		SetSliderOptionValueST(StorageUtil.GetIntValue(none,"DW.Arousal_threshold"))
+		CORE.DW_Arousal_threshold.SetValue(value as int)
+		SetSliderOptionValueST(CORE.DW_Arousal_threshold.GetValue())
 	endEvent
 	
 	event OnHighlightST()
@@ -279,12 +283,12 @@ endState
 
 state SquirtDrippingA_Toggle
 	event OnSelectST()
-		if StorageUtil.GetIntValue(none,"DW.SquirtChanceArousal") != 1
-			StorageUtil.SetIntValue(none,"DW.SquirtChanceArousal", 1)
+		if CORE.DW_bSquirtChanceArousal.GetValue() != 1
+			CORE.DW_bSquirtChanceArousal.SetValue(1)
 		else
-			StorageUtil.SetIntValue(none,"DW.SquirtChanceArousal", 0)
+			CORE.DW_bSquirtChanceArousal.SetValue(0)
 		endif
-		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.SquirtChanceArousal"))
+		SetToggleOptionValueST(CORE.DW_bSquirtChanceArousal.GetValue())
 	endEvent
 	
 	event OnHighlightST()
@@ -294,12 +298,12 @@ endState
 
 state SquirtSLGender_Toggle
 	event OnSelectST()
-		if StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt") != 1
-			StorageUtil.SetIntValue(none,"DW.UseSLGenderForSquirt", 1)
+		if CORE.DW_bUseSLGenderForSquirt.GetValue() != 1
+			CORE.DW_bUseSLGenderForSquirt.SetValue(1)
 		else
-			StorageUtil.SetIntValue(none,"DW.UseSLGenderForSquirt", 0)
+			CORE.DW_bUseSLGenderForSquirt.SetValue(0)
 		endif
-		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.UseSLGenderForSquirt"))
+		SetToggleOptionValueST(CORE.DW_bUseSLGenderForSquirt.GetValue())
 	endEvent
 	
 	event OnHighlightST()
@@ -309,15 +313,15 @@ endState
 
 state SquirtDrippingChance_Slider
 	event OnSliderOpenST()
-		SetSliderDialogStartValue(StorageUtil.GetIntValue(none,"DW.SquirtChance", 50))
+		SetSliderDialogStartValue(CORE.DW_SquirtChance.GetValue())
 		SetSliderDialogDefaultValue(50)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(1)
 	endEvent
 
 	event OnSliderAcceptST(float value)
-		StorageUtil.SetIntValue(none,"DW.SquirtChance", value as int)
-		SetSliderOptionValueST(StorageUtil.GetIntValue(none,"DW.SquirtChance"))
+		CORE.DW_SquirtChance.SetValue(value as int)
+		SetSliderOptionValueST(CORE.DW_SquirtChance.GetValue())
 	endEvent
 endState
 
@@ -383,12 +387,12 @@ endState
 
 state VLISLS_Toggle
 	event OnSelectST()
-		if StorageUtil.GetIntValue(none,"DW.bSLStatsIgnore") != 1
-			StorageUtil.SetIntValue(none,"DW.bSLStatsIgnore", 1)
+		if CORE.DW_bSLStatsIgnore.GetValue() != 1
+			CORE.DW_bSLStatsIgnore.SetValue(1)
 		else
-			StorageUtil.SetIntValue(none,"DW.bSLStatsIgnore", 0)
+			CORE.DW_bSLStatsIgnore.SetValue(0)
 		endif
-		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.bSLStatsIgnore"))
+		SetToggleOptionValueST(CORE.DW_bSLStatsIgnore.GetValue())
 	endEvent
 	
 	event OnHighlightST()
@@ -396,20 +400,20 @@ state VLISLS_Toggle
 	endEvent
 endState
 
-state DW_effects_Toggler
-	event OnSelectST()
-		if StorageUtil.GetIntValue(none,"DW.bUseSpells")
-			StorageUtil.SetIntValue(none,"DW.bUseSpells", 1)
-		else
-			StorageUtil.SetIntValue(none,"DW.bUseSpells", 0)
-		endif
-		SetToggleOptionValueST(StorageUtil.GetIntValue(none,"DW.bUseSpells"))
-	endEvent
-	
-	event OnHighlightST()
-		SetInfoText("$DW_USOP_DESC")
-	endEvent
-endState
+;state DW_effects_Toggler
+;	event OnSelectST()
+;		if CORE.DW_bUseSpells.GetValue()
+;			CORE.DW_bUseSpells.SetValue(1)
+;		else
+;			CORE.DW_bUseSpells.SetValue(0)
+;		endif
+;		SetToggleOptionValueST(CORE.DW_bUseSpells.GetValue())
+;	endEvent
+;	
+;	event OnHighlightST()
+;		SetInfoText("$DW_USOP_DESC")
+;	endEvent
+;endState
 
 state Visual_Toggle
 	event OnSelectST()
@@ -553,6 +557,26 @@ state Sound_Disable_Toggle
 	endEvent
 endState
 
+state Force_Start_Toggle
+	event OnSelectST()
+		if ForceStart
+			!ForceStart
+		else
+			ForceStart
+			CORE.Startup()
+			CORE.DW_bSquirtChanceArousal.SetValue(1)
+			Quest.GetQuest("DW_Dripping_Status").stop()
+			Quest.GetQuest("DW_Dripping_Status").start()
+		endif
+		
+		SetToggleOptionValueST(ForceStart)
+	endEvent
+	
+	event OnHighlightST()
+		SetInfoText("$DW_Force_Start_DESC")
+	endEvent
+endState
+
 state Virginity_BloodLeak_Toggle
 	event OnSelectST()
 		if CORE.DW_ModState13.GetValue() != 1
@@ -600,15 +624,15 @@ endState
 
 state DW_Timer_Slider
 	event OnSliderOpenST()
-		SetSliderDialogStartValue(StorageUtil.GetIntValue(none,"DW.DW_Timer", 10))
+		SetSliderDialogStartValue(CORE.DW_Timer.GetValue())
 		SetSliderDialogDefaultValue(10)
 		SetSliderDialogRange(5, 120)
 		SetSliderDialogInterval(1)
 	endEvent
 
 	event OnSliderAcceptST(float value)
-		StorageUtil.SetIntValue(none,"DW.DW_Timer", value as int)
-		SetSliderOptionValueST(StorageUtil.GetIntValue(none,"DW.DW_Timer", 10), "$DW_SECONDS")
+		CORE.DW_Timer.SetValue(value as int)
+		SetSliderOptionValueST(CORE.DW_Timer.GetValue(), "$DW_SECONDS")
 	endEvent
 	
 	event OnHighlightST()
@@ -618,15 +642,15 @@ endState
 
 state DW_SpellsUpdateTimer_Slider
 	event OnSliderOpenST()
-		SetSliderDialogStartValue(StorageUtil.GetIntValue(none,"DW.DW_SpellsUpdateTimer", 1))
+		SetSliderDialogStartValue(CORE.DW_SpellsUpdateTimer.GetValue())
 		SetSliderDialogDefaultValue(1)
 		SetSliderDialogRange(1, 60)
 		SetSliderDialogInterval(1)
 	endEvent
 
 	event OnSliderAcceptST(float value)
-		StorageUtil.SetIntValue(none,"DW.DW_SpellsUpdateTimer", value as int)
-		SetSliderOptionValueST(StorageUtil.GetIntValue(none,"DW.DW_SpellsUpdateTimer", 1), "$DW_SECONDS")
+		CORE.DW_SpellsUpdateTimer.SetValue(value as int)
+		SetSliderOptionValueST(CORE.DW_SpellsUpdateTimer.GetValue(), "$DW_SECONDS")
 	endEvent
 	
 	event OnHighlightST()
@@ -636,15 +660,15 @@ endState
 
 state DW_effects_light_Slider
 	event OnSliderOpenST()
-		SetSliderDialogStartValue(StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33))
+		SetSliderDialogStartValue(CORE.DW_effects_light.GetValue())
 		SetSliderDialogDefaultValue(33)
 		SetSliderDialogRange(1, 99)
 		SetSliderDialogInterval(1)
 	endEvent
 
 	event OnSliderAcceptST(float value)
-		StorageUtil.SetIntValue(none,"DW.DW_effects_light", value as int)
-		SetSliderOptionValueST(StorageUtil.GetIntValue(none,"DW.DW_effects_light", 33))
+		CORE.DW_effects_light.SetValue(value as int)
+		SetSliderOptionValueST(CORE.DW_effects_light.GetValue())
 		Maintenance()
 	endEvent
 	
@@ -655,15 +679,15 @@ endState
 
 state DW_effects_heavy_Slider
 	event OnSliderOpenST()
-		SetSliderDialogStartValue(StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66))
+		SetSliderDialogStartValue(CORE.DW_effects_heavy.GetValue())
 		SetSliderDialogDefaultValue(66)
 		SetSliderDialogRange(1, 99)
 		SetSliderDialogInterval(1)
 	endEvent
 
 	event OnSliderAcceptST(float value)
-		StorageUtil.SetIntValue(none,"DW.DW_effects_heavy", value as int)
-		SetSliderOptionValueST(StorageUtil.GetIntValue(none,"DW.DW_effects_heavy", 66))
+		CORE.DW_effects_heavy.SetValue(value as int)
+		SetSliderOptionValueST(CORE.DW_effects_heavy.GetValue())
 		Maintenance()
 	endEvent
 	
@@ -678,7 +702,7 @@ event OnOptionSelect(int option)
 		SetToggleOptionValue(Page_Virginity_VC_OID, true)
 		ResetVC = false
 	elseif option == Page_Virginity_VL_OID
-		StorageUtil.SetIntValue(none,"DW.bPlayerIsVirgin", 1)
+		CORE.DW_bPlayerIsVirgin.SetValue(1)
 		CORE.DW_VirginsList.Revert()
 		SetToggleOptionValue(Page_Virginity_VL_OID, true)
 		ResetVL = false
