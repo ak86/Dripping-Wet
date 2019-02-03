@@ -81,6 +81,10 @@ function Page_Settings()
 			AddSliderOptionST("SquirtDrippingChance_Slider", "$DW_FEMSQUIRTCHANCE", CORE.DW_SquirtChance.GetValue())
 			AddToggleOptionST("SquirtSLGender_Toggle", "$DW_FEMSQUIRTEFFSLGender", CORE.DW_bUseSLGenderForSquirt.GetValue())
 			AddEmptyOption()
+			
+			AddToggleOptionST("MilkleakPC_Toggle", "$DW_MILKLEAKPCEFF", CORE.DW_ModState16.GetValue())
+			AddToggleOptionST("MilkleakNPC_Toggle", "$DW_MILKLEAKNPCEFF", CORE.DW_ModState17.GetValue())
+			AddEmptyOption()
 
 			AddToggleOptionST("GagDrooling_Toggle", "$DW_GAGDROOLEFF", CORE.DW_ModState04.GetValue())
 			AddEmptyOption()
@@ -322,6 +326,36 @@ state SquirtDrippingChance_Slider
 	event OnSliderAcceptST(float value)
 		CORE.DW_SquirtChance.SetValue(value as int)
 		SetSliderOptionValueST(CORE.DW_SquirtChance.GetValue())
+	endEvent
+endState
+
+state MilkleakPC_Toggle
+	event OnSelectST()
+		if CORE.DW_ModState16.GetValue() != 1
+			CORE.DW_ModState16.SetValue(1)
+		else
+			CORE.DW_ModState16.SetValue(0)
+		endif
+		SetToggleOptionValueST(CORE.DW_ModState16.GetValue())
+	endEvent
+	
+	event OnHighlightST()
+		SetInfoText("$DW_MILKLEAKPCEFF_DESC")
+	endEvent
+endState
+
+state MilkleakNPC_Toggle
+	event OnSelectST()
+		if CORE.DW_ModState17.GetValue() != 1
+			CORE.DW_ModState17.SetValue(1)
+		else
+			CORE.DW_ModState17.SetValue(0)
+		endif
+		SetToggleOptionValueST(CORE.DW_ModState17.GetValue())
+	endEvent
+	
+	event OnHighlightST()
+		SetInfoText("$DW_MILKLEAKNPCEFF_DESC")
 	endEvent
 endState
 

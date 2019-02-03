@@ -57,25 +57,29 @@ Function Orgasm(Actor akActor, String _args)
 			Int Chance = 50
 			sslBaseAnimation animation = SexLab.HookAnimation(_args)
 			
-			;Squirt for females, any position
+			;Squirt for females
 			if CORE.DW_ModState03.GetValue() == 1
-				While idx < actors.Length
-					if akActor == actors[idx]
-						if CORE.DW_bSquirtChanceArousal.GetValue() != 1
-							Chance = CORE.DW_SquirtChance.GetValue() as int
-						else
-							Chance = CORE.SLA.GetActorArousal(actors[idx])
-						endif
-
-						if Utility.RandomInt(0, 100) <= Chance
-							if CORE.DW_bUseSLGenderForSquirt.GetValue() != 1\
-							|| (GetGender( actors[idx] ) == 1  && actors[idx].GetLeveledActorBase().GetSex() == 1 && CORE.DW_bUseSLGenderForSquirt.GetValue() == 1)
-								CORE.DW_DrippingSquirt_Spell.cast( actors[idx] )
-							endif
-						endif
+				if CORE.DW_bUseSLGenderForSquirt.GetValue() != 1\
+				|| (GetGender( akActor ) == 1  && akActor.GetLeveledActorBase().GetSex() == 1 && CORE.DW_bUseSLGenderForSquirt.GetValue() == 1)
+				
+					if CORE.DW_bSquirtChanceArousal.GetValue() != 1
+						Chance = CORE.DW_SquirtChance.GetValue() as int
+					else
+						Chance = CORE.SLA.GetActorArousal(akActor)
 					endif
-					idx += 1
-				EndWhile
+					
+					if Utility.RandomInt(0, 100) <= Chance
+							CORE.DW_DrippingSquirt_Spell.cast( akActor )
+					endif
+				endif
+			endif
+			
+			;Milkleak for females
+			if akActor.GetLeveledActorBase().GetSex() == 1
+				if (CORE.DW_ModState16.GetValue() == 1 && akActor == Game.Getplayer())\
+				|| (CORE.DW_ModState17.GetValue() == 1 && akActor != Game.Getplayer())
+					CORE.DW_Milkleak_Spell.cast( akActor )
+				endif
 			endif
 			
 			;cum leak for reciever[0] if male/partner has penis
@@ -94,8 +98,8 @@ Function Orgasm(Actor akActor, String _args)
 			;disabled since idk how to align ejaculation effect with penis
 			;idx = 0
 			;While idx < actors.Length
-			;	if CORE.SOS.GetSOS(actors[idx]) == true
-			;		CORE.DW_DrippingSOSCum_Spell.cast( actors[idx] )
+			;	if CORE.SOS.GetSOS(akActor) == true
+			;		CORE.DW_DrippingSOSCum_Spell.cast( akActor )
 			;	endif
 			;	idx += 1
 			;EndWhile

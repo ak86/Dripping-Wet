@@ -23,6 +23,8 @@ GlobalVariable Property DW_ModState12 Auto		; Breath Sound volume max/arousal ba
 GlobalVariable Property DW_ModState13 Auto		; Virginity loss effect
 GlobalVariable Property DW_ModState14 Auto		; Virginity loss texture effect
 GlobalVariable Property DW_ModState15 Auto		; Virginity game messages
+GlobalVariable Property DW_ModState16 Auto		; PC Milkleak effect
+GlobalVariable Property DW_ModState17 Auto		; NPC Milkleak effect
 GlobalVariable Property DW_Cloak_Range Auto
 
 GlobalVariable Property DW_Timer Auto
@@ -58,6 +60,7 @@ SPELL Property DW_DrippingGag_Spell Auto
 SPELL Property DW_Breath_Spell Auto
 SPELL Property DW_Heart_Spell Auto
 SPELL Property DW_Visuals_Spell Auto
+SPELL Property DW_Milkleak_Spell Auto
 
 Sound Property Breathing1 Auto				;F Low
 Sound Property Breathing2 Auto				;F High

@@ -53,21 +53,31 @@ Function Orgasm(Actor akRef1, Actor akRef2)
 		;Squirt for females, any position
 		if CORE.DW_ModState03.GetValue() == 1
 			While idx < actors.Length
-				if CORE.DW_bSquirtChanceArousal.GetValue() != 1
-					Chance = CORE.DW_SquirtChance.GetValue() as int
-				else
-					Chance = CORE.SLA.GetActorArousal(actors[idx])
-				endif
+				if (actors[idx].GetLeveledActorBase().GetSex() == 1)
+					if CORE.DW_bSquirtChanceArousal.GetValue() != 1
+						Chance = CORE.DW_SquirtChance.GetValue() as int
+					else
+						Chance = CORE.SLA.GetActorArousal(actors[idx])
+					endif
 
-				if Utility.RandomInt(0, 100) <= Chance
-					if CORE.DW_bUseSLGenderForSquirt.GetValue() != 1\
-					|| (actors[idx].GetLeveledActorBase().GetSex() == 1)
+					if Utility.RandomInt(0, 100) <= Chance
 						CORE.DW_DrippingSquirt_Spell.cast( actors[idx] )
 					endif
 				endif
 				idx += 1
 			EndWhile
 		endif
+		
+		;Milkleak for females
+		While idx < actors.Length
+			if actors[idx].GetLeveledActorBase().GetSex() == 1
+				if (CORE.DW_ModState16.GetValue() == 1 && actors[idx] == Game.Getplayer())\
+				|| (CORE.DW_ModState17.GetValue() == 1 && actors[idx] != Game.Getplayer())
+					CORE.DW_Milkleak_Spell.cast( actors[idx] )
+				endif
+			endif
+			idx += 1
+		EndWhile
 		
 		;cum leak for actor[1] if male/partner has penis
 		;or otherway around cum leak for actor[0] if male/partner has penis
