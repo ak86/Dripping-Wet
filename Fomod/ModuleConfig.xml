@@ -70,7 +70,7 @@
 					<flagDependency flag="SoS" value="True"/>
 				</dependencies>
 				<files>
-					<folder source="01_Optional\SoS\True" destination=""/>
+					<folder source="01_Stuff\SoS\True" destination=""/>
 				</files>
 			</pattern>
 			
@@ -79,7 +79,7 @@
 					<flagDependency flag="SoS" value=""/>
 				</dependencies>
 				<files>
-					<folder source="01_Optional\SoS\False" destination=""/>
+					<folder source="01_Stuff\SoS\False" destination=""/>
 				</files>
 			</pattern>
 			
@@ -88,7 +88,7 @@
 					<flagDependency flag="FG" value="True"/>
 				</dependencies>
 				<files>
-					<folder source="01_Optional\FG\True" destination=""/>
+					<folder source="01_Stuff\FG\True" destination=""/>
 				</files>
 			</pattern>
 			
@@ -97,7 +97,7 @@
 					<flagDependency flag="FG" value=""/>
 				</dependencies>
 				<files>
-					<folder source="01_Optional\FG\False" destination=""/>
+					<folder source="01_Stuff\FG\False" destination=""/>
 				</files>
 			</pattern>
 		</patterns>

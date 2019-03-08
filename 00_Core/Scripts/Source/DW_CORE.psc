@@ -94,11 +94,35 @@ Function Startup()
 	
 	Utility.wait(1)
 	DW_PluginsCheck.SetValue(1)
-	MCM.Maintenance()
+	Maintenance()
 	DW_VirginsClaimedTG.Revert()
 	RegisterForSingleUpdate(1)
 	;debug.Notification("DW startup" + DW_PluginsCheck.GetValue())
 EndFunction
+
+Function Maintenance()
+	if DW_effects_heavy.GetValue() < 0 || DW_effects_heavy.GetValue() == 100
+		DW_effects_heavy.SetValue(66)
+	endif
+	if DW_effects_light.GetValue() < 0 || DW_effects_light.GetValue() == 100
+		DW_effects_light.SetValue(33)
+	endif
+	if DW_effects_light.GetValue() >= DW_effects_heavy.GetValue() && DW_effects_heavy.GetValue() >= 1
+		DW_effects_light.SetValue(DW_effects_heavy.GetValue() - 1)
+	endif
+	
+	Actor PlayerRef = Game.GetPlayer()
+	if (DW_ModState05.GetValue() == 0 || DW_ModState07.GetValue() == 0) && PlayerRef.HasSpell( DW_Visuals_Spell )	;remove visuals
+		PlayerRef.RemoveSpell(DW_Visuals_Spell)
+	endif
+	if DW_ModState06.GetValue() == 0 && PlayerRef.HasSpell( DW_Heart_Spell )		;remove sound
+		PlayerRef.RemoveSpell(DW_Heart_Spell)
+	endif
+	if DW_ModState08.GetValue() == 0 && PlayerRef.HasSpell( DW_Breath_Spell )		;remove sound
+		PlayerRef.RemoveSpell(DW_Breath_Spell)
+	endif
+EndFunction
+
 
 Event OnUpdate()
 	Actor akActor = Game.GetPlayer()

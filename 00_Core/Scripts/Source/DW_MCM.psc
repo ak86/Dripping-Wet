@@ -8,30 +8,6 @@ bool ResetVC = false
 bool ResetVL = false
 bool ForceStart = false
 
-Function Maintenance()
-	if CORE.DW_effects_heavy.GetValue() < 0 || CORE.DW_effects_heavy.GetValue() == 100
-		CORE.DW_effects_heavy.SetValue(66)
-	endif
-	if CORE.DW_effects_light.GetValue() < 0 || CORE.DW_effects_light.GetValue() == 100
-		CORE.DW_effects_light.SetValue(33)
-	endif
-	if CORE.DW_effects_light.GetValue() >= CORE.DW_effects_heavy.GetValue() && CORE.DW_effects_heavy.GetValue() >= 1
-		CORE.DW_effects_light.SetValue(CORE.DW_effects_heavy.GetValue() - 1)
-	endif
-	
-	Actor PlayerRef = Game.GetPlayer()
-	if (CORE.DW_ModState05.GetValue() == 0 || CORE.DW_ModState07.GetValue() == 0) && PlayerRef.HasSpell( CORE.DW_Visuals_Spell )	;remove visuals
-		PlayerRef.RemoveSpell(CORE.DW_Visuals_Spell)
-	endif
-	if CORE.DW_ModState06.GetValue() == 0 && PlayerRef.HasSpell( CORE.DW_Heart_Spell )		;remove sound
-		PlayerRef.RemoveSpell(CORE.DW_Heart_Spell)
-	endif
-	if CORE.DW_ModState08.GetValue() == 0 && PlayerRef.HasSpell( CORE.DW_Breath_Spell )		;remove sound
-		PlayerRef.RemoveSpell(CORE.DW_Breath_Spell)
-	endif
-	ForceStart = false
-EndFunction
-
 event OnConfigInit()
     ModName = "Dripping When Aroused"
 	self.RefreshStrings()
@@ -145,12 +121,12 @@ function Page_Virginity()
 	SetCursorFillMode(TOP_TO_BOTTOM)
 		if CORE.DW_PlayerVirginityLoss.GetValue() > 0
 			AddHeaderOption("$DW_PCVIRGINLOST")
-				AddTextOption("$DW_TOTAL", CORE.DW_PlayerVirginityLoss.GetValue(), OPTION_FLAG_DISABLED)
+				AddTextOption("$DW_SINCEGAMESTART", CORE.DW_PlayerVirginityLoss.GetValue() as Int, OPTION_FLAG_DISABLED)
 		endif
 		
 		AddHeaderOption("$DW_PCVIRGINSCLAIMED")
-			AddTextOption("$DW_TOTAL", CORE.DW_VirginsClaimed.GetSize(), OPTION_FLAG_DISABLED)
-			AddTextOption("$DW_SINCEGAMESTART", CORE.DW_VirginsClaimedTG.GetSize(), OPTION_FLAG_DISABLED)
+			AddTextOption("$DW_SINCEGAMESTART", CORE.DW_VirginsClaimed.GetSize(), OPTION_FLAG_DISABLED)
+			AddTextOption("$DW_SINCEGAMELOAD", CORE.DW_VirginsClaimedTG.GetSize(), OPTION_FLAG_DISABLED)
 			Page_Virginity_VC_OID = AddToggleOption("$DW_RESET", ResetVC)
 			int i = CORE.DW_VirginsClaimed.GetSize()
 			while i > 0
@@ -164,7 +140,7 @@ function Page_Virginity()
 
 	SetCursorPosition(1)
 		AddHeaderOption("$DW_NPCSVIRGNLOST")
-			AddTextOption("$DW_TOTAL", CORE.DW_VirginsList.GetSize(), OPTION_FLAG_DISABLED)
+			AddTextOption("$DW_SINCEGAMESTART", CORE.DW_VirginsList.GetSize(), OPTION_FLAG_DISABLED)
 			Page_Virginity_VL_OID = AddToggleOption("$DW_RESET", ResetVL)
 			
 			i = CORE.DW_VirginsList.GetSize()
@@ -455,7 +431,7 @@ state Visual_Toggle
 			CORE.DW_ModState05.SetValue(1)
 		else
 			CORE.DW_ModState05.SetValue(0)
-			Maintenance()
+			CORE.Maintenance()
 		endif
 		SetToggleOptionValueST(CORE.DW_ModState05.GetValue())
 	endEvent
@@ -471,7 +447,7 @@ state Light_Visual_Toggle
 			CORE.DW_ModState07.SetValue(1)
 		else
 			CORE.DW_ModState07.SetValue(0)
-			Maintenance()
+			CORE.Maintenance()
 		endif
 		SetToggleOptionValueST(CORE.DW_ModState07.GetValue())
 	endEvent
@@ -502,7 +478,7 @@ state Heart_Toggle
 			CORE.DW_ModState06.SetValue(1)
 		else
 			CORE.DW_ModState06.SetValue(0)
-			Maintenance()
+			CORE.Maintenance()
 		endif
 		SetToggleOptionValueST(CORE.DW_ModState06.GetValue())
 	endEvent
@@ -518,7 +494,7 @@ state Breathing_Toggle
 			CORE.DW_ModState08.SetValue(1)
 		else
 			CORE.DW_ModState08.SetValue(0)
-			Maintenance()
+			CORE.Maintenance()
 		endif
 		SetToggleOptionValueST(CORE.DW_ModState08.GetValue())
 	endEvent
@@ -534,7 +510,7 @@ state HeartVol_Toggle
 			CORE.DW_ModState11.SetValue(1)
 		else
 			CORE.DW_ModState11.SetValue(0)
-			Maintenance()
+			CORE.Maintenance()
 		endif
 		SetToggleOptionValueST(CORE.DW_ModState11.GetValue())
 	endEvent
@@ -550,7 +526,7 @@ state BreathingVol_Toggle
 			CORE.DW_ModState12.SetValue(1)
 		else
 			CORE.DW_ModState12.SetValue(0)
-			Maintenance()
+			CORE.Maintenance()
 		endif
 		SetToggleOptionValueST(CORE.DW_ModState12.GetValue())
 	endEvent
@@ -566,7 +542,7 @@ state Breathing_NPC_Toggle
 			CORE.DW_ModState00.SetValue(1)
 		else
 			CORE.DW_ModState00.SetValue(0)
-			Maintenance()
+			CORE.Maintenance()
 		endif
 		SetToggleOptionValueST(CORE.DW_ModState00.GetValue())
 	endEvent
@@ -603,6 +579,7 @@ state Force_Start_Toggle
 			Quest.GetQuest("DW_Dripping_Status").start()
 		endif
 		
+		ForceStart = false
 		SetToggleOptionValueST(ForceStart)
 	endEvent
 	
@@ -703,7 +680,7 @@ state DW_effects_light_Slider
 	event OnSliderAcceptST(float value)
 		CORE.DW_effects_light.SetValue(value as int)
 		SetSliderOptionValueST(CORE.DW_effects_light.GetValue())
-		Maintenance()
+		CORE.Maintenance()
 	endEvent
 	
 	event OnHighlightST()
@@ -722,7 +699,7 @@ state DW_effects_heavy_Slider
 	event OnSliderAcceptST(float value)
 		CORE.DW_effects_heavy.SetValue(value as int)
 		SetSliderOptionValueST(CORE.DW_effects_heavy.GetValue())
-		Maintenance()
+		CORE.Maintenance()
 	endEvent
 	
 	event OnHighlightST()
