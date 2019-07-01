@@ -72,12 +72,22 @@ Sound Property Heartbeat2 Auto				;High
 ImageSpaceModifier Property HighArousalVisual Auto
 ImageSpaceModifier Property LowArousalVisual Auto
 
-Bool Property Plugin_SLAR = false auto
-Bool Property Plugin_AR = false auto
+Bool Property Plugin_DD = false auto
+Bool Property Plugin_ZaZ = false auto
+Bool Property Plugin_SOS = false auto
+
+;Sexlab
 Bool Property Plugin_SL = false auto
+Bool Property Plugin_SLAR = false auto
+;FlowerGirls
 Bool Property Plugin_FGSE = false auto
+Bool Property Plugin_AR = false auto
 
 Function Startup()
+	Plugin_DD = (Game.GetModbyName("Devious Devices - Assets.esm") != 255)
+	Plugin_ZaZ = (Game.GetModbyName("ZaZAnimationPack.esm") != 255)
+	Plugin_SOS = (Game.GetModbyName("Schlongs of Skyrim.esp") != 255)
+	
 	Plugin_SL = (Game.GetModbyName("SexLab.esm") != 255)
 	Plugin_SLAR = (Game.GetModbyName("SexLabAroused.esm") != 255)
 

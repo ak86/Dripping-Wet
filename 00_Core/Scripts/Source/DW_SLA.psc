@@ -8,6 +8,7 @@ int Function GetActorArousal(Actor akActor)
 	DW_CORE CORE = Game.GetFormFromFile(0xD62, "DW.esp") as DW_CORE
 	Faction slaArousal
 	int rank = 0
+	
 	;Sexlab
 	if CORE.Plugin_SLAR
 		slaArousal = Game.GetFormFromFile(0x3FC36, "SexLabAroused.esm") As Faction

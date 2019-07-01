@@ -5,20 +5,26 @@ Event OnInit()
 EndEvent
 
 bool Function IsWearingZaZGag (Actor akActor)
-	Keyword zbfWornGag = Keyword.GetKeyword("zbfWornGag")
-	if ( zbfWornGag )
-		if akActor.WornHasKeyword(zbfWornGag)
-			Return true
+	DW_CORE CORE = Game.GetFormFromFile(0xD62, "DW.esp") as DW_CORE
+	if CORE.Plugin_ZaZ
+		Keyword zbfWornGag = Keyword.GetKeyword("zbfWornGag")
+		if ( zbfWornGag )
+			if akActor.WornHasKeyword(zbfWornGag)
+				return true
+			endif
 		endif
 	endif
-	Return false
+	return false
 EndFunction
 
 bool Function IsWearingZaZBlindfold (Actor akActor)
-	Keyword zbfWornBlindfold = Keyword.GetKeyword("zbfWornBlindfold")
-	if ( zbfWornBlindfold )
-		if akActor.WornHasKeyword(zbfWornBlindfold)
-			return true
+	DW_CORE CORE = Game.GetFormFromFile(0xD62, "DW.esp") as DW_CORE
+	if CORE.Plugin_ZaZ
+		Keyword zbfWornBlindfold = Keyword.GetKeyword("zbfWornBlindfold")
+		if ( zbfWornBlindfold )
+			if akActor.WornHasKeyword(zbfWornBlindfold)
+				return true
+			endif
 		endif
 	endif
 	return false

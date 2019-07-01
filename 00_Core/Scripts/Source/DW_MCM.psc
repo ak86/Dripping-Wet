@@ -118,10 +118,11 @@ function Page_Settings()
 endfunction
 
 function Page_Virginity()
+	;debug.messagebox("this message prevents mcm crash, and idk how to fix it /n" + CORE.DW_PlayerVirginityLoss.GetValueInt())
 	SetCursorFillMode(TOP_TO_BOTTOM)
-		if CORE.DW_PlayerVirginityLoss.GetValue() > 0
+		if CORE.DW_PlayerVirginityLoss.GetValueInt() > 0
 			AddHeaderOption("$DW_PCVIRGINLOST")
-				AddTextOption("$DW_SINCEGAMESTART", CORE.DW_PlayerVirginityLoss.GetValue() as Int, OPTION_FLAG_DISABLED)
+				AddTextOption("$DW_SINCEGAMESTART", CORE.DW_PlayerVirginityLoss.GetValueInt(), OPTION_FLAG_DISABLED)
 		endif
 		
 		AddHeaderOption("$DW_PCVIRGINSCLAIMED")
