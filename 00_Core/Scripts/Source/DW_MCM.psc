@@ -131,12 +131,12 @@ function Page_Virginity()
 			Page_Virginity_VC_OID = AddToggleOption("$DW_RESET", ResetVC)
 			int i = CORE.DW_VirginsClaimed.GetSize()
 			while i > 0
-				i -= 1
-				if CORE.DW_VirginsClaimed.GetAt(i) != None
+				if CORE.DW_VirginsClaimed.GetAt(i) as Actor != None
 					if (CORE.DW_VirginsClaimed.GetAt(i) as Actor).GetLeveledActorBase().GetName() != ""
 						AddTextOption((CORE.DW_VirginsClaimed.GetAt(i) as Actor).GetLeveledActorBase().GetName(), OPTION_FLAG_DISABLED)
 					endif
 				endif
+				i -= 1
 			endwhile
 
 	SetCursorPosition(1)
@@ -146,12 +146,12 @@ function Page_Virginity()
 			
 			i = CORE.DW_VirginsList.GetSize()
 			while i > 0
-				i -= 1
-				if CORE.DW_VirginsList.GetAt(i) != None
+				if CORE.DW_VirginsList.GetAt(i) as Actor != None
 					if (CORE.DW_VirginsClaimed.GetAt(i) as Actor).GetLeveledActorBase().GetName() != ""
 						AddTextOption((CORE.DW_VirginsList.GetAt(i) as Actor).GetLeveledActorBase().GetName(), OPTION_FLAG_DISABLED)
 					endif
 				endif
+				i -= 1
 			endwhile
 endfunction
 

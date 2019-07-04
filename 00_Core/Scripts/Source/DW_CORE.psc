@@ -199,8 +199,10 @@ Event OnUpdate()
 			iRef = iRef + 1
 		endWhile
 	endif
-
-	RegisterForSingleUpdate(DW_Timer.GetValue())
+	
+	if DW_Timer.GetValue() > 0
+		RegisterForSingleUpdate(DW_Timer.GetValue())
+	endif
 EndEvent
 
 Event RV(Form apForm)

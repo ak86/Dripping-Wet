@@ -35,8 +35,10 @@ Event OnUpdate()
 				else
 					CORE.LowArousalVisual.Remove()
 				endif
-				RegisterForSingleUpdate(CORE.DW_SpellsUpdateTimer.GetValue())
-				return
+				if akActor.HasSpell(CORE.DW_Visuals_Spell)
+					RegisterForSingleUpdate(CORE.DW_SpellsUpdateTimer.GetValue())
+					return
+				endif
 			endif
 		endif
 	endif

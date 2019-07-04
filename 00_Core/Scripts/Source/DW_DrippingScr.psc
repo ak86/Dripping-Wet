@@ -28,7 +28,9 @@ EndEvent
 
 Event OnObjectUnequipped( Form akBaseObject, ObjectReference akReference )
 	Actor akActor = GetActorRef()
-	if !(CORE.DDi.IsWearingDDGag(akActor)) && !(CORE.zbf.IsWearingZaZGag(akActor))
-		akActor.RemoveSpell(CORE.DW_DrippingGag_Spell)
+	if akActor
+		if !(CORE.DDi.IsWearingDDGag(akActor)) && !(CORE.zbf.IsWearingZaZGag(akActor))
+			akActor.RemoveSpell(CORE.DW_DrippingGag_Spell)
+		endif
 	endif
 EndEvent

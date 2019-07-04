@@ -71,8 +71,10 @@ Event OnUpdate()
 			akActor.RemoveSpell(CORE.DW_Breath_Spell)
 			return
 		endif
-		RegisterForSingleUpdate(CORE.DW_SpellsUpdateTimer.GetValue())
-		return
+		if akActor.HasSpell(CORE.DW_Breath_Spell)
+			RegisterForSingleUpdate(CORE.DW_SpellsUpdateTimer.GetValue())
+			return
+		endif
 	endif
 	akActor.RemoveSpell(CORE.DW_Breath_Spell)
 EndEvent
