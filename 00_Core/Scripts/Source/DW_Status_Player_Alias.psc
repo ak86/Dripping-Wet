@@ -1,12 +1,15 @@
 Scriptname DW_Status_Player_Alias extends ReferenceAlias
 {DW check script Player_Alias}
-;Should (re)launch DW_Status script on every player load game
+;Should (re)launch DW_Status script on every player load game to check if mod scripts not broken
 
 
 Event OnPlayerLoadGame()
-	(Game.GetFormFromFile(0xD62, "DW.esp") as Quest).stop()
+	Quest status_qst = Game.GetFormFromFile(0x998C, "DW.esp") as Quest
+	status_qst.Stop()
+	status_qst.Start()
+	
 	;Quest.GetQuest("DW_Dripping_Status").stop()
 	;Quest.GetQuest("DW_Dripping_Status").reset()	;reset interrupts script, so we don't use it here
-	(Game.GetFormFromFile(0xD62, "DW.esp") as Quest).start()
 	;Quest.GetQuest("DW_Dripping_Status").start()
+
 EndEvent
