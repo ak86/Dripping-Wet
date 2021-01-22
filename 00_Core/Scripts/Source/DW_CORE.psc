@@ -159,7 +159,8 @@ Event OnUpdate()
 	if SLA.GetActorArousal(akActor) >= DW_Arousal_threshold.GetValue()
 		if DW_bUseSLGenderForDripp.GetValue() != 1\
 		|| (SL.GetGender( akActor ) == 1  && akActor.GetLeveledActorBase().GetSex() == 1 && DW_bUseSLGenderForDripp.GetValue() == 1)
-			akActor.AddSpell( DW_Dripping_Spell, false )
+			;akActor.AddSpell( DW_Dripping_Spell, false )
+			DW_Dripping_Spell.cast( akActor )
 		endif
 	endif
 	
