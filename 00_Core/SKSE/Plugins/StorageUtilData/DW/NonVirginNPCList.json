@@ -1,0 +1,9 @@
+{
+	"formList" : 
+	{
+		#BaseID
+		#probably shouldnt put here non Unique npcs
+		#Serana 2B6C HEX -> 11116 DEC
+		"not_a_virgin" : [ "11116|Dawnguard.esm", "" ]
+	}
+}

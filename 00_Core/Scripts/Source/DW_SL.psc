@@ -125,6 +125,9 @@ Event OnSexLabStageChange(String _eventName, String _args, Float _argc, Form _se
 				if animation.HasTag("Vaginal") && actors.Length > 1
 					;check if dom actor(1) has penetrator and sub actor(0) has something to penetrate
 					If ((CORE.SOS.GetSOS(actors[1]) == true || SexLab.Config.UseStrapons == true) || actors[1].GetLeveledActorBase().GetSex() != 1) && actors[0].GetLeveledActorBase().GetSex() == 1
+						If JsonUtil.FormListHas("/DW/NonVirginNPCList", "not_a_virgin", actors[0].GetLeveledActorBase()) == true
+							return
+						EndIf
 						If CORE.DW_VirginsList.Find(actors[0]) == -1
 							;add non virgin npc to a list
 							;check if actor sl virgin
@@ -165,8 +168,8 @@ Event OnSexLabStageChange(String _eventName, String _args, Float _argc, Form _se
 								EndIf
 							EndIf
 							CORE.DW_VirginsList.AddForm(actors[0])
-							CORE.DW_DrippingBlood_Spell.cast( actors[0] )
-							;CORE.DW_DrippingBloodTextures_Spell.cast( actors[0] )
+							CORE.DW_DrippingBlood_Spell.cast(actors[0])
+							;CORE.DW_DrippingBloodTextures_Spell.cast(actors[0])
 							return
 						EndIf
 					EndIf
